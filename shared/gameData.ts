@@ -1,6 +1,6 @@
 // Business case scenarios for the IPO Learning Game
 
-  export interface Challenge {
+export interface Challenge {
     id: string;
     sector: string;
     company: string;
@@ -15,7 +15,7 @@
     items?: { id: string; text: string; category: string }[];
   }
 
-  export const businessCases = {
+export const businessCases = {
     netflix: {
       name: "Netflix",
       sector: "Entertainment & Media",
