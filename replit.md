@@ -1,7 +1,7 @@
 # IPO Learning Game
 
 ## Overview
-Educational web application teaching Input-Processing-Output (IPO) concepts through immersive scenario-based role-playing challenges for ICDI bachelor students at Chiang Mai University.
+Educational web application teaching Input-Processing-Output (IPO) concepts through interactive challenges for ICDI bachelor students at Chiang Mai University.
 
 ## Architecture
 - **Frontend**: React + TypeScript + Tailwind CSS + Shadcn UI
@@ -18,23 +18,32 @@ Educational web application teaching Input-Processing-Output (IPO) concepts thro
 
 ## Key Files
 - `shared/schema.ts` - Database schema (students, gameSessions, challengeResponses)
-- `shared/gameData.ts` - All 30 scenario-based challenges across 5 business cases
+- `shared/gameData.ts` - All 30 interactive challenges across 5 business cases
 - `server/routes.ts` - API endpoints with server-side caching
 - `server/db.ts` - Database connection
 - `client/src/App.tsx` - Main app with routing
-- `client/src/pages/HomePage.tsx` - Landing page
+- `client/src/pages/HomePage.tsx` - Landing page with 5 challenge type descriptions
 - `client/src/pages/RegistrationPage.tsx` - Student registration
-- `client/src/pages/GamePage.tsx` - Main game interface (scenario-based)
+- `client/src/pages/GamePage.tsx` - Main game interface with 5 interactive types
 - `client/src/pages/ResultsPage.tsx` - Results and leaderboard
-- `client/src/components/game/ScenarioChallenge.tsx` - Scenario role-play component
+- `client/src/components/game/DragSortChallenge.tsx` - Drag & drop for IPO sort + classification
+- `client/src/components/game/OrderingChallenge.tsx` - Sequence ordering (drag to reorder)
+- `client/src/components/game/MatchingChallenge.tsx` - Click-to-connect pair matching
+- `client/src/components/game/CalculationChallenge.tsx` - Numeric input calculation
 
-## Challenge Format (Gamified Scenarios)
+## 5 Interactive Challenge Types
+1. **drag-drop-ipo** - Drag items into Input/Processing/Output zones
+2. **drag-drop-classify** - Drag items into Digital Tool/Technology/Business Concept zones
+3. **ordering** - Drag steps into correct sequence order
+4. **matching** - Click left item then right item to connect pairs (color-coded badges)
+5. **calculation** - Read scenario data and compute numeric answer (with tolerance)
+
+## Challenge Data Structure
 Each challenge has:
-- **Role**: Student plays a professional role (e.g., "Junior Data Analyst", "CTO", "Strategy Director")
-- **Scenario**: Immersive business situation with realistic context
-- **Mission**: The specific decision or classification the student must make
-- **Options**: 4 possible decisions to choose from
-- **Explanation**: Detailed educational feedback after each answer
+- `role`, `scenario`, `mission`, `explanation` (scenario framing)
+- `type`: one of the 5 interactive types
+- Type-specific fields: `items` (drag-drop), `steps` (ordering), `pairs` (matching), `calcData` (calculation)
+- `correctAnswer`: type-specific correct answer format
 
 ## Business Cases
 5 real-world scenarios (not from lecture slides):
@@ -45,14 +54,15 @@ Each challenge has:
 5. Airbnb (Hospitality) - Two-sided marketplace, network effects, trust
 
 ## Game Structure
-- 30 scenario-based challenges (6 per business case)
+- 30 interactive challenges (6 per business case)
 - Each case: 2 easy (100pts), 2 medium (150pts), 2 hard (200pts)
+- Distribution per case: 2 drag-drop-ipo, 1 ordering, 1 drag-drop-classify, 1 matching, 1 calculation
 - Total possible score: 4,500 points
 - Designed for 30-45 minutes of engagement
 
 ## Game Flow
 1. Register with full name + student ID
-2. Complete 30 scenario challenges (role-play and make decisions)
+2. Complete 30 interactive challenges (drag, order, match, calculate)
 3. View results with sector breakdown and leaderboard
 
 ## API Endpoints

@@ -35,10 +35,10 @@ export default function HomePage() {
           <Card data-testid="card-info-challenges">
             <CardHeader className="pb-3">
               <Target className="w-8 h-8 text-green-600 mb-2" />
-              <CardTitle className="text-lg">30 Scenarios</CardTitle>
+              <CardTitle className="text-lg">30 Interactive Challenges</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">Role-play real business situations and make strategic decisions</p>
+              <p className="text-sm text-gray-600">Drag-and-drop, ordering, matching, and calculation puzzles</p>
             </CardContent>
           </Card>
 
@@ -48,7 +48,7 @@ export default function HomePage() {
               <CardTitle className="text-lg">30-45 Minutes</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">Complete at your own pace with timed challenges</p>
+              <p className="text-sm text-gray-600">Complete at your own pace with hands-on activities</p>
             </CardContent>
           </Card>
 
@@ -71,7 +71,7 @@ export default function HomePage() {
           <CardContent className="space-y-4">
             <div className="grid md:grid-cols-2 gap-6">
               <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid="case-netflix">
-                <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white text-lg shrink-0">N</div>
+                <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white text-lg font-bold shrink-0">N</div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1">Netflix</h3>
                   <p className="text-sm text-gray-600">Content delivery platform serving 300M+ subscribers with Open Connect CDN</p>
@@ -79,7 +79,7 @@ export default function HomePage() {
               </div>
 
               <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid="case-spotify">
-                <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white text-lg shrink-0">S</div>
+                <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white text-lg font-bold shrink-0">S</div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1">Spotify</h3>
                   <p className="text-sm text-gray-600">AI-powered music recommendation system with 600M+ users</p>
@@ -87,7 +87,7 @@ export default function HomePage() {
               </div>
 
               <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid="case-grab">
-                <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-lg shrink-0">G</div>
+                <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-lg font-bold shrink-0">G</div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1">Grab</h3>
                   <p className="text-sm text-gray-600">Southeast Asia's super-app combining ride-hailing, delivery, and fintech</p>
@@ -95,7 +95,7 @@ export default function HomePage() {
               </div>
 
               <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid="case-shopify">
-                <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white text-lg shrink-0">Sh</div>
+                <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white text-lg font-bold shrink-0">Sh</div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1">Shopify</h3>
                   <p className="text-sm text-gray-600">E-commerce platform powering 5.6M+ merchant stores globally</p>
@@ -103,7 +103,7 @@ export default function HomePage() {
               </div>
 
               <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid="case-airbnb">
-                <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white text-lg shrink-0">A</div>
+                <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white text-lg font-bold shrink-0">A</div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1">Airbnb</h3>
                   <p className="text-sm text-gray-600">Two-sided marketplace connecting hosts and guests worldwide</p>
@@ -115,21 +115,29 @@ export default function HomePage() {
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-xl">How It Works</CardTitle>
+            <CardTitle className="text-xl">5 Interactive Challenge Types</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-indigo-700">1. Play a Role</h4>
-                <p className="text-sm text-gray-600">Step into roles like Data Engineer, CTO, Strategy Director, and more</p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="p-4 bg-blue-50 rounded-lg">
+                <h4 className="font-semibold mb-1 text-blue-700">Drag & Drop: IPO Sort</h4>
+                <p className="text-sm text-gray-600">Drag components into Input, Processing, or Output zones</p>
               </div>
-              <div className="p-4 bg-amber-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-amber-700">2. Read the Scenario</h4>
-                <p className="text-sm text-gray-600">Face realistic business challenges drawn from real platform operations</p>
+              <div className="p-4 bg-purple-50 rounded-lg">
+                <h4 className="font-semibold mb-1 text-purple-700">Drag & Drop: Classification</h4>
+                <p className="text-sm text-gray-600">Classify items as Digital Tool, Technology, or Business Concept</p>
               </div>
               <div className="p-4 bg-green-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-green-700">3. Make Your Decision</h4>
-                <p className="text-sm text-gray-600">Apply IPO concepts, classify technologies, and solve strategic problems</p>
+                <h4 className="font-semibold mb-1 text-green-700">Sequence Ordering</h4>
+                <p className="text-sm text-gray-600">Arrange pipeline steps in the correct IPO sequence</p>
+              </div>
+              <div className="p-4 bg-amber-50 rounded-lg">
+                <h4 className="font-semibold mb-1 text-amber-700">Connection Matching</h4>
+                <p className="text-sm text-gray-600">Draw connections between components and their descriptions</p>
+              </div>
+              <div className="p-4 bg-rose-50 rounded-lg">
+                <h4 className="font-semibold mb-1 text-rose-700">Calculation</h4>
+                <p className="text-sm text-gray-600">Compute real metrics like bandwidth, streams, and scale numbers</p>
               </div>
             </div>
           </CardContent>

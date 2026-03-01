@@ -6,14 +6,25 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { businessCases, challenges } from "@shared/gameData";
-import ScenarioChallenge from "@/components/game/ScenarioChallenge";
-import { Trophy, Loader2 } from "lucide-react";
+import DragSortChallenge from "@/components/game/DragSortChallenge";
+import OrderingChallenge from "@/components/game/OrderingChallenge";
+import MatchingChallenge from "@/components/game/MatchingChallenge";
+import CalculationChallenge from "@/components/game/CalculationChallenge";
+import { Trophy, Loader2, UserCircle, Target } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
 const businessCasesByS = Object.values(businessCases).reduce((acc, bc) => {
   acc[bc.sector] = bc;
   return acc;
 }, {} as Record<string, (typeof businessCases)[keyof typeof businessCases]>);
+
+const TYPE_LABELS: Record<string, string> = {
+  "drag-drop-ipo": "Drag & Drop: IPO Sort",
+  "drag-drop-classify": "Drag & Drop: Classification",
+  "ordering": "Sequence Ordering",
+  "matching": "Connection Matching",
+  "calculation": "Calculation",
+};
 
 export default function GamePage() {
   const [, params] = useRoute("/game/:sessionId");
@@ -98,7 +109,7 @@ export default function GamePage() {
           setChallengeStartTime(Date.now());
           setIsSubmitting(false);
         }
-      }, 3500);
+      }, 4000);
     } catch (error) {
       toast({
         title: "Error",
@@ -128,45 +139,47 @@ export default function GamePage() {
   const businessCase = businessCasesByS[currentChallenge.sector];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-6">
       <div className="container mx-auto px-4 max-w-4xl">
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-4">
+        <div className="mb-5">
+          <div className="flex justify-between items-center mb-3">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900" data-testid="text-game-title">IPO Learning Game</h1>
+              <h1 className="text-xl font-bold text-gray-900" data-testid="text-game-title">IPO Learning Game</h1>
               <p className="text-sm text-gray-600" data-testid="text-challenge-counter">
-                Scenario {currentChallengeIndex + 1} of {challenges.length}
+                Challenge {currentChallengeIndex + 1} of {challenges.length}
               </p>
             </div>
-            <div className="flex gap-4 items-center">
-              <div className="flex items-center gap-2" data-testid="text-score">
-                <Trophy className="w-5 h-5 text-yellow-600" />
-                <span className="font-semibold">{totalScore} pts</span>
-              </div>
+            <div className="flex items-center gap-2" data-testid="text-score">
+              <Trophy className="w-5 h-5 text-yellow-600" />
+              <span className="font-semibold">{totalScore} pts</span>
             </div>
           </div>
           <Progress value={progress} className="h-2" data-testid="progress-bar" />
         </div>
 
-        <Card className="mb-6">
-          <CardHeader className="pb-4">
+        <Card className="mb-4">
+          <CardHeader className="pb-3 pt-4">
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-full ${businessCase?.color || 'bg-blue-500'} flex items-center justify-center text-2xl text-white font-bold`}>
+              <div className={`w-10 h-10 rounded-full ${businessCase?.color || 'bg-blue-500'} flex items-center justify-center text-lg text-white font-bold shrink-0`}>
                 {businessCase?.icon}
               </div>
-              <div>
-                <CardTitle className="text-xl" data-testid="text-company-name">{businessCase?.name}</CardTitle>
-                <p className="text-sm text-muted-foreground" data-testid="text-company-description">{businessCase?.description}</p>
+              <div className="flex-1">
+                <CardTitle className="text-lg" data-testid="text-company-name">{businessCase?.name}</CardTitle>
+                <p className="text-xs text-muted-foreground" data-testid="text-company-description">{businessCase?.description}</p>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <Badge variant="secondary" data-testid="badge-difficulty">{currentChallenge.difficulty}</Badge>
+                <Badge variant="outline" data-testid="badge-points">{currentChallenge.points} pts</Badge>
               </div>
             </div>
           </CardHeader>
         </Card>
 
         {showFeedback && (
-          <Card className={`mb-6 border-2 ${feedbackCorrect ? 'border-green-500 bg-green-50' : 'border-red-400 bg-red-50'}`} data-testid="card-feedback">
-            <CardContent className="pt-6">
+          <Card className={`mb-4 border-2 ${feedbackCorrect ? 'border-green-500 bg-green-50' : 'border-red-400 bg-red-50'}`} data-testid="card-feedback">
+            <CardContent className="pt-5 pb-4">
               <h3 className={`font-bold text-lg mb-2 ${feedbackCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                {feedbackCorrect ? "Correct Decision!" : "Not Quite Right"}
+                {feedbackCorrect ? "Correct!" : "Not Quite Right"}
               </h3>
               <p className="text-sm text-gray-700">{feedbackExplanation}</p>
             </CardContent>
@@ -174,26 +187,36 @@ export default function GamePage() {
         )}
 
         <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" data-testid="badge-difficulty">
-                {currentChallenge.difficulty}
-              </Badge>
-              <Badge variant="outline" data-testid="badge-points">
-                {currentChallenge.points} pts
-              </Badge>
-              <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200" data-testid="badge-type">
-                Scenario
-              </Badge>
+          <CardHeader className="pb-2 pt-4">
+            <Badge variant="outline" className="w-fit mb-2 bg-indigo-50 text-indigo-700 border-indigo-200" data-testid="badge-type">
+              {TYPE_LABELS[currentChallenge.type] || currentChallenge.type}
+            </Badge>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-200 rounded-md w-fit" data-testid="text-role">
+              <UserCircle className="w-4 h-4 text-indigo-600 shrink-0" />
+              <span className="text-xs font-semibold text-indigo-700">Your Role: {currentChallenge.role}</span>
             </div>
           </CardHeader>
-          <CardContent>
-            <ScenarioChallenge
-              key={currentChallenge.id}
-              challenge={currentChallenge}
-              onAnswer={handleAnswer}
-              disabled={isSubmitting}
-            />
+          <CardContent className="space-y-4">
+            <p className="text-sm text-slate-700 leading-relaxed" data-testid="text-scenario">
+              {currentChallenge.scenario}
+            </p>
+            <div className="flex items-start gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-md" data-testid="text-mission">
+              <Target className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <span className="text-sm font-semibold text-amber-800">{currentChallenge.mission}</span>
+            </div>
+
+            {(currentChallenge.type === "drag-drop-ipo" || currentChallenge.type === "drag-drop-classify") && (
+              <DragSortChallenge key={currentChallenge.id} challenge={currentChallenge} onAnswer={handleAnswer} disabled={isSubmitting} />
+            )}
+            {currentChallenge.type === "ordering" && (
+              <OrderingChallenge key={currentChallenge.id} challenge={currentChallenge} onAnswer={handleAnswer} disabled={isSubmitting} />
+            )}
+            {currentChallenge.type === "matching" && (
+              <MatchingChallenge key={currentChallenge.id} challenge={currentChallenge} onAnswer={handleAnswer} disabled={isSubmitting} />
+            )}
+            {currentChallenge.type === "calculation" && (
+              <CalculationChallenge key={currentChallenge.id} challenge={currentChallenge} onAnswer={handleAnswer} disabled={isSubmitting} />
+            )}
           </CardContent>
         </Card>
       </div>
