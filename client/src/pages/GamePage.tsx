@@ -56,7 +56,7 @@ export default function GamePage() {
   const [celebration, setCelebration] = useState<{ isCorrect: boolean; points: number; explanation: string } | null>(null);
 
   const avatarId = localStorage.getItem("ipo_avatar") || "ninja";
-  const avatarEmoji = AVATARS.find(a => a.id === avatarId)?.emoji || "\u{1F977}";
+  const avatarEmoji = AVATARS.find(a => a.id === avatarId)?.emoji || "\uD83E\uDD77";
 
   const currentChallenge = currentChallengeIndex < challenges.length ? challenges[currentChallengeIndex] : null;
   const progress = useMemo(() => Math.round((currentChallengeIndex / challenges.length) * 100), [currentChallengeIndex]);
@@ -146,8 +146,8 @@ export default function GamePage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 flex items-center justify-center" data-testid="loading-screen">
         <div className="text-center animate-bounce-in">
-          <div className="text-6xl mb-4 animate-walk">{avatarEmoji}</div>
-          <p className="text-lg text-gray-600 font-medium">Loading your quest...</p>
+          <div className="text-5xl sm:text-6xl mb-4 animate-walk">{avatarEmoji}</div>
+          <p className="text-base sm:text-lg text-gray-600 font-medium">Loading your quest...</p>
         </div>
       </div>
     );
@@ -157,7 +157,7 @@ export default function GamePage() {
   const TypeIcon = TYPE_ICONS[currentChallenge.type] || Swords;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 py-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 py-3 sm:py-4">
       {celebration && (
         <CelebrationOverlay
           isCorrect={celebration.isCorrect}
@@ -168,30 +168,30 @@ export default function GamePage() {
         />
       )}
 
-      <div className="container mx-auto px-4 max-w-4xl">
+      <div className="container mx-auto px-3 sm:px-4 max-w-4xl">
         <div className="flex justify-between items-center mb-2 px-1">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">{avatarEmoji}</span>
+            <span className="text-xl sm:text-2xl">{avatarEmoji}</span>
             <div>
-              <h1 className="text-sm font-bold text-gray-900" data-testid="text-game-title">IPO Quest</h1>
-              <p className="text-xs text-gray-500" data-testid="text-challenge-counter">
+              <h1 className="text-xs sm:text-sm font-bold text-gray-900" data-testid="text-game-title">IPO Quest</h1>
+              <p className="text-[11px] sm:text-xs text-gray-500" data-testid="text-challenge-counter">
                 Quest {currentChallengeIndex + 1} of {challenges.length}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="text-right">
-              <div className="text-xs text-gray-500">Score</div>
-              <div className="font-bold text-indigo-600" data-testid="text-score">{totalScore} pts</div>
+              <div className="text-[11px] sm:text-xs text-gray-500">Score</div>
+              <div className="font-bold text-sm sm:text-base text-indigo-600" data-testid="text-score">{totalScore} pts</div>
             </div>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-400 flex items-center justify-center text-lg border-2 border-yellow-500">
-              🏆
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-400 flex items-center justify-center text-base sm:text-lg border-2 border-yellow-500">
+              {"\uD83C\uDFC6"}
             </div>
           </div>
         </div>
 
         <div className="mb-2">
-          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden" data-testid="progress-bar">
+          <div className="w-full bg-gray-200 rounded-full h-2" data-testid="progress-bar">
             <div
               className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-700 ease-out"
               style={{ width: `${progress}%` }}
@@ -199,7 +199,7 @@ export default function GamePage() {
           </div>
           <div className="flex justify-between text-[10px] text-gray-400 mt-0.5 px-1">
             <span>Start</span>
-            <span>{progress}% complete</span>
+            <span>{progress}%</span>
             <span>Finish!</span>
           </div>
         </div>
@@ -208,13 +208,13 @@ export default function GamePage() {
 
         <Card className="mb-3 overflow-hidden animate-slide-up" key={currentChallenge.id}>
           <div className={`h-1.5 ${businessCase?.color || "bg-indigo-500"}`} />
-          <CardHeader className="pb-2 pt-3">
+          <CardHeader className="pb-2 pt-3 px-3 sm:px-6">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">{businessCase?.emoji}</span>
+                <span className="text-xl sm:text-2xl">{businessCase?.emoji}</span>
                 <div>
-                  <div className="font-bold text-base" data-testid="text-company-name">{businessCase?.name}</div>
-                  <div className="text-xs text-muted-foreground" data-testid="text-quest-name">{businessCase?.questName}</div>
+                  <div className="font-bold text-sm sm:text-base" data-testid="text-company-name">{businessCase?.name}</div>
+                  <div className="text-[11px] sm:text-xs text-muted-foreground" data-testid="text-quest-name">{businessCase?.questName}</div>
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
@@ -223,23 +223,23 @@ export default function GamePage() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-3 pt-0">
-            <div className="flex items-center gap-2">
+          <CardContent className="space-y-3 pt-0 px-3 sm:px-6">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <TypeIcon className="w-4 h-4 text-indigo-500 shrink-0" />
-              <Badge variant="secondary" className="text-xs" data-testid="badge-type">
+              <Badge variant="secondary" className="text-[11px] sm:text-xs" data-testid="badge-type">
                 {TYPE_LABELS[currentChallenge.type]}
               </Badge>
-              <Badge variant="outline" className="text-xs bg-indigo-50 text-indigo-700 border-indigo-200" data-testid="text-role">
+              <Badge variant="outline" className="text-[11px] sm:text-xs bg-indigo-50 text-indigo-700 border-indigo-200" data-testid="text-role">
                 {currentChallenge.role}
               </Badge>
             </div>
 
             <div className="bg-white/60 rounded-lg p-3 border border-gray-200" data-testid="text-scenario">
-              <p className="text-sm text-gray-700 leading-relaxed">{currentChallenge.scenario}</p>
+              <p className="text-sm leading-relaxed text-gray-700">{currentChallenge.scenario}</p>
             </div>
 
-            <div className="flex items-start gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg" data-testid="text-mission">
-              <span className="text-base shrink-0">🎯</span>
+            <div className="flex items-start gap-2 px-3 py-2.5 bg-amber-50 border border-amber-200 rounded-lg" data-testid="text-mission">
+              <span className="text-base shrink-0">{"\uD83C\uDFAF"}</span>
               <span className="text-sm font-semibold text-amber-800">{currentChallenge.mission}</span>
             </div>
 

@@ -137,8 +137,29 @@
     @apply border-border;
   }
 
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior: none;
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  button, a, [role="button"] {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+  }
+
+  input, textarea, select {
+    font-size: 16px !important;
   }
 }
 

@@ -88,17 +88,17 @@ export default function MatchingChallenge({ challenge, onAnswer, disabled }: Pro
   const allConnected = Object.keys(connections).length === pairs.length;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Link2 className="w-4 h-4 text-muted-foreground" />
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-          Click a left item, then click the matching right item to connect them
+        <Link2 className="w-4 h-4 text-muted-foreground shrink-0" />
+        <p className="text-xs sm:text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+          {selectedLeft ? "Now tap a description on the right to connect" : "Tap a component on the left first"}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-4">
         <div className="space-y-2">
-          <p className="text-xs font-bold text-slate-500 uppercase mb-2">Components</p>
+          <p className="text-xs font-bold text-slate-500 uppercase">Components - tap to select</p>
           {pairs.map(pair => {
             const connIdx = getConnectionIndex(pair.id);
             const isConnected = connIdx >= 0;
@@ -109,21 +109,23 @@ export default function MatchingChallenge({ challenge, onAnswer, disabled }: Pro
                 key={pair.id}
                 data-testid={`left-item-${pair.id}`}
                 onClick={() => handleLeftClick(pair.id)}
-                className={`p-3 cursor-pointer transition-all text-sm ${
-                  isSelected ? "border-2 border-primary ring-2 ring-primary/20 bg-primary/5" :
+                className={`p-3 sm:p-4 cursor-pointer transition-all touch-manipulation text-sm sm:text-base ${
+                  isSelected ? "border-2 border-primary ring-2 ring-primary/20 bg-primary/5 scale-[1.02]" :
                   isConnected ? `border-2 ${color?.border} ${color?.bg}` :
-                  "hover:border-slate-400"
-                } ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}
+                  "active:scale-[0.98] hover:border-slate-400"
+                } ${disabled ? "opacity-60 pointer-events-none" : ""}`}
               >
                 <div className="flex items-center gap-2">
                   {isConnected && (
-                    <span className={`w-5 h-5 rounded-full ${color?.badge} text-white text-xs flex items-center justify-center font-bold shrink-0`}>
+                    <span className={`w-6 h-6 rounded-full ${color?.badge} text-white text-xs flex items-center justify-center font-bold shrink-0`}>
                       {connIdx + 1}
                     </span>
                   )}
                   <span className="flex-1">{pair.left}</span>
                   {isConnected && (
-                    <X className="w-3.5 h-3.5 text-red-400 hover:text-red-600 shrink-0" />
+                    <span className="w-7 h-7 flex items-center justify-center rounded-full bg-red-100 shrink-0">
+                      <X className="w-4 h-4 text-red-500" />
+                    </span>
                   )}
                 </div>
               </Card>
@@ -132,7 +134,9 @@ export default function MatchingChallenge({ challenge, onAnswer, disabled }: Pro
         </div>
 
         <div className="space-y-2">
-          <p className="text-xs font-bold text-slate-500 uppercase mb-2">Descriptions</p>
+          <p className="text-xs font-bold text-slate-500 uppercase">
+            Descriptions {selectedLeft ? "- tap to connect" : ""}
+          </p>
           {shuffledRight.map(pair => {
             const connIdx = getRightConnectionIndex(pair.id);
             const isConnected = connIdx >= 0;
@@ -143,15 +147,15 @@ export default function MatchingChallenge({ challenge, onAnswer, disabled }: Pro
                 key={pair.id}
                 data-testid={`right-item-${pair.id}`}
                 onClick={() => handleRightClick(pair.id)}
-                className={`p-3 transition-all text-sm ${
-                  canClick ? "cursor-pointer hover:border-primary hover:bg-primary/5" : "cursor-default"
+                className={`p-3 sm:p-4 transition-all touch-manipulation text-sm sm:text-base ${
+                  canClick ? "cursor-pointer border-2 border-dashed border-primary/40 bg-primary/5 active:scale-[0.98]" : "cursor-default"
                 } ${
                   isConnected ? `border-2 ${color?.border} ${color?.bg}` : ""
                 } ${disabled ? "opacity-60" : ""}`}
               >
                 <div className="flex items-center gap-2">
                   {isConnected && (
-                    <span className={`w-5 h-5 rounded-full ${color?.badge} text-white text-xs flex items-center justify-center font-bold shrink-0`}>
+                    <span className={`w-6 h-6 rounded-full ${color?.badge} text-white text-xs flex items-center justify-center font-bold shrink-0`}>
                       {connIdx + 1}
                     </span>
                   )}
@@ -163,7 +167,13 @@ export default function MatchingChallenge({ challenge, onAnswer, disabled }: Pro
         </div>
       </div>
 
-      <Button onClick={handleSubmit} disabled={!allConnected || disabled} className="w-full" size="lg" data-testid="button-submit-answer">
+      <Button
+        onClick={handleSubmit}
+        disabled={!allConnected || disabled}
+        className="w-full py-6 text-base touch-manipulation"
+        size="lg"
+        data-testid="button-submit-answer"
+      >
         {disabled ? "Submitting..." : `Submit Connections (${Object.keys(connections).length}/${pairs.length})`}
       </Button>
     </div>

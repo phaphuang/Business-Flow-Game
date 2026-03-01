@@ -8,8 +8,8 @@ interface Props {
   onComplete: () => void;
 }
 
-const CONFETTI = ["\u2B50", "\u{1F389}", "\u2728", "\u{1F31F}", "\u{1F3C6}", "\u{1F4AB}"];
-const ENCOURAGE = ["\u{1F4AA}", "\u{1F914}", "\u{1F9E0}", "\u{1F4DA}"];
+const CONFETTI = ["\u2B50", "\uD83C\uDF89", "\u2728", "\uD83C\uDF1F", "\uD83C\uDFC6", "\uD83D\uDCAB"];
+const ENCOURAGE = ["\uD83D\uDCAA", "\uD83E\uDD14", "\uD83E\uDDE0", "\uD83D\uDCDA"];
 
 export default function CelebrationOverlay({ isCorrect, points, explanation, avatar, onComplete }: Props) {
   const [particles, setParticles] = useState<{ id: number; emoji: string; x: number; delay: number }[]>([]);
@@ -29,11 +29,15 @@ export default function CelebrationOverlay({ isCorrect, points, explanation, ava
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" data-testid="celebration-overlay">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+      data-testid="celebration-overlay"
+      onClick={onComplete}
+    >
       {isCorrect && particles.map(p => (
         <div
           key={p.id}
-          className="absolute text-2xl pointer-events-none"
+          className="absolute text-xl sm:text-2xl pointer-events-none"
           style={{
             left: `${p.x}%`,
             top: "20%",
@@ -44,21 +48,22 @@ export default function CelebrationOverlay({ isCorrect, points, explanation, ava
         </div>
       ))}
 
-      <div className={`animate-bounce-in rounded-2xl p-6 max-w-sm mx-4 text-center shadow-2xl ${
+      <div className={`animate-bounce-in rounded-2xl p-5 sm:p-6 max-w-sm w-full text-center shadow-2xl ${
         isCorrect ? "bg-gradient-to-b from-green-50 to-green-100 border-2 border-green-300" : "bg-gradient-to-b from-orange-50 to-orange-100 border-2 border-orange-300"
       }`}>
-        <div className="text-5xl mb-3 animate-float">
+        <div className="text-4xl sm:text-5xl mb-2 sm:mb-3 animate-float">
           {isCorrect ? avatar : ENCOURAGE[Math.floor(Math.random() * ENCOURAGE.length)]}
         </div>
-        <h2 className={`text-2xl font-bold mb-1 ${isCorrect ? "text-green-700" : "text-orange-700"}`}>
-          {isCorrect ? "Awesome! \u{1F389}" : "Not quite! \u{1F4AA}"}
+        <h2 className={`text-xl sm:text-2xl font-bold mb-1 ${isCorrect ? "text-green-700" : "text-orange-700"}`}>
+          {isCorrect ? "Awesome! \uD83C\uDF89" : "Not quite! \uD83D\uDCAA"}
         </h2>
         {isCorrect && points > 0 && (
-          <div className="animate-star inline-block text-lg font-bold text-yellow-600 mb-2">
+          <div className="animate-star inline-block text-base sm:text-lg font-bold text-yellow-600 mb-2">
             +{points} points!
           </div>
         )}
         <p className="text-sm text-gray-600 leading-relaxed mt-2">{explanation}</p>
+        <p className="text-xs text-gray-400 mt-3">Tap anywhere to continue</p>
       </div>
     </div>
   );

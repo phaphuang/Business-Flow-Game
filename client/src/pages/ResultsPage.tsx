@@ -19,11 +19,8 @@ const FIRST = "\uD83E\uDD47";
 const SECOND = "\uD83E\uDD48";
 const THIRD = "\uD83E\uDD49";
 const CROWN = "\uD83D\uDC51";
-const STAR = "\u2B50";
 const MUSCLE = "\uD83D\uDCAA";
 const ROCKET = "\uD83D\uDE80";
-const BOOK = "\uD83D\uDCDA";
-const PARTY = "\uD83C\uDF89";
 const SPARKLE = "\uD83C\uDF1F";
 
 export default function ResultsPage() {
@@ -79,62 +76,62 @@ export default function ResultsPage() {
   const medals = [FIRST, SECOND, THIRD];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 py-8">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <div className="text-center mb-8 animate-bounce-in">
-          <div className="text-7xl mb-3">{avatarEmoji}</div>
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-1" data-testid="text-game-complete">Quest Complete!</h1>
-          <p className={`text-2xl font-bold ${perf.color}`} data-testid="text-performance">{perf.text}</p>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 py-6 sm:py-8">
+      <div className="container mx-auto px-3 sm:px-4 max-w-4xl">
+        <div className="text-center mb-6 sm:mb-8 animate-bounce-in">
+          <div className="text-5xl sm:text-7xl mb-2 sm:mb-3">{avatarEmoji}</div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-1" data-testid="text-game-complete">Quest Complete!</h1>
+          <p className={`text-xl sm:text-2xl font-bold ${perf.color}`} data-testid="text-performance">{perf.text}</p>
           <p className="text-sm text-gray-500 mt-1">Well done, {playerName}!</p>
         </div>
 
-        <Card className="mb-6 overflow-hidden">
+        <Card className="mb-4 sm:mb-6 overflow-hidden">
           <div className="h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500" />
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg">{CHART} Your Stats</CardTitle>
+          <CardHeader className="pb-2 px-3 sm:px-6">
+            <CardTitle className="text-base sm:text-lg">{CHART} Your Stats</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <CardContent className="px-3 sm:px-6">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
               <div className="text-center p-3 bg-yellow-50 rounded-xl border border-yellow-200" data-testid="stat-total-score">
-                <div className="text-2xl mb-1">{TROPHY}</div>
-                <div className="text-2xl font-extrabold text-yellow-600">{session.totalScore}</div>
-                <div className="text-xs text-gray-500">Total Points</div>
+                <div className="text-xl sm:text-2xl mb-1">{TROPHY}</div>
+                <div className="text-xl sm:text-2xl font-extrabold text-yellow-600">{session.totalScore}</div>
+                <div className="text-[11px] sm:text-xs text-gray-500">Total Points</div>
               </div>
               <div className="text-center p-3 bg-green-50 rounded-xl border border-green-200" data-testid="stat-accuracy">
-                <div className="text-2xl mb-1">{TARGET}</div>
-                <div className="text-2xl font-extrabold text-green-600">{accuracy}%</div>
-                <div className="text-xs text-gray-500">Accuracy</div>
+                <div className="text-xl sm:text-2xl mb-1">{TARGET}</div>
+                <div className="text-xl sm:text-2xl font-extrabold text-green-600">{accuracy}%</div>
+                <div className="text-[11px] sm:text-xs text-gray-500">Accuracy</div>
               </div>
               <div className="text-center p-3 bg-blue-50 rounded-xl border border-blue-200" data-testid="stat-correct">
-                <div className="text-2xl mb-1">{CHECK}</div>
-                <div className="text-2xl font-extrabold text-blue-600">{correctAnswers}/{totalQuestions}</div>
-                <div className="text-xs text-gray-500">Correct</div>
+                <div className="text-xl sm:text-2xl mb-1">{CHECK}</div>
+                <div className="text-xl sm:text-2xl font-extrabold text-blue-600">{correctAnswers}/{totalQuestions}</div>
+                <div className="text-[11px] sm:text-xs text-gray-500">Correct</div>
               </div>
               <div className="text-center p-3 bg-purple-50 rounded-xl border border-purple-200" data-testid="stat-time">
-                <div className="text-2xl mb-1">{TIMER}</div>
-                <div className="text-2xl font-extrabold text-purple-600">{session.timeSpentMinutes || 0}</div>
-                <div className="text-xs text-gray-500">Minutes</div>
+                <div className="text-xl sm:text-2xl mb-1">{TIMER}</div>
+                <div className="text-xl sm:text-2xl font-extrabold text-purple-600">{session.timeSpentMinutes || 0}</div>
+                <div className="text-[11px] sm:text-xs text-gray-500">Minutes</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="mb-6">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg">{MAP} World Results</CardTitle>
+        <Card className="mb-4 sm:mb-6">
+          <CardHeader className="pb-2 px-3 sm:px-6">
+            <CardTitle className="text-base sm:text-lg">{MAP} World Results</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-3 sm:px-6">
             <div className="space-y-3">
               {Object.entries(sectorStats).map(([sector, stats]: [string, any]) => {
                 const bc = Object.values(businessCases).find(b => b.sector === sector);
                 const sectorAccuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
                 return (
-                  <div key={sector} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50" data-testid={`sector-result-${sector}`}>
-                    <span className="text-2xl">{bc?.emoji || GLOBE}</span>
-                    <div className="flex-1">
+                  <div key={sector} className="flex items-center gap-2 sm:gap-3 p-2 rounded-lg" data-testid={`sector-result-${sector}`}>
+                    <span className="text-xl sm:text-2xl">{bc?.emoji || GLOBE}</span>
+                    <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-center mb-1">
-                        <span className="font-semibold text-sm">{bc?.questName || sector}</span>
-                        <span className="text-xs text-gray-500">{stats.correct}/{stats.total} {"\u2022"} {stats.points} pts</span>
+                        <span className="font-semibold text-xs sm:text-sm truncate">{bc?.questName || sector}</span>
+                        <span className="text-[11px] sm:text-xs text-gray-500 shrink-0 ml-2">{stats.correct}/{stats.total} {"\u2022"} {stats.points} pts</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
@@ -151,11 +148,11 @@ export default function ResultsPage() {
         </Card>
 
         {leaderboard && Array.isArray(leaderboard) && leaderboard.length > 0 && (
-          <Card className="mb-6">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">{MEDAL} Leaderboard</CardTitle>
+          <Card className="mb-4 sm:mb-6">
+            <CardHeader className="pb-2 px-3 sm:px-6">
+              <CardTitle className="text-base sm:text-lg">{MEDAL} Leaderboard</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-3 sm:px-6">
               <div className="space-y-2">
                 {leaderboard.slice(0, 10).map((entry: any, index: number) => {
                   const isYou = entry.studentDbId === session.studentId;
@@ -167,18 +164,18 @@ export default function ResultsPage() {
                         isYou ? "bg-indigo-50 border-2 border-indigo-300 ring-1 ring-indigo-200" : "bg-gray-50"
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl w-8 text-center">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                        <span className="text-lg sm:text-xl w-7 sm:w-8 text-center shrink-0">
                           {index < 3 ? medals[index] : `#${index + 1}`}
                         </span>
-                        <div>
-                          <div className="font-semibold text-sm">
+                        <div className="min-w-0">
+                          <div className="font-semibold text-xs sm:text-sm truncate">
                             {entry.fullName} {isYou && <span className="text-indigo-500">(You!)</span>}
                           </div>
-                          <div className="text-xs text-gray-500">{entry.timeSpentMinutes || 0} min</div>
+                          <div className="text-[11px] sm:text-xs text-gray-500">{entry.timeSpentMinutes || 0} min</div>
                         </div>
                       </div>
-                      <div className="font-bold text-indigo-600">{entry.totalScore} pts</div>
+                      <div className="font-bold text-sm sm:text-base text-indigo-600 shrink-0 ml-2">{entry.totalScore} pts</div>
                     </div>
                   );
                 })}
@@ -187,17 +184,17 @@ export default function ResultsPage() {
           </Card>
         )}
 
-        <div className="flex gap-3">
+        <div className="flex gap-2 sm:gap-3 pb-6">
           <Button
             variant="outline"
-            className="flex-1 py-5"
+            className="flex-1 py-6 text-sm sm:text-base touch-manipulation"
             onClick={() => setLocation("/")}
             data-testid="button-back-home"
           >
-            {HOUSE} Back to Home
+            {HOUSE} Home
           </Button>
           <Button
-            className="flex-1 py-5 bg-gradient-to-r from-indigo-500 to-purple-500"
+            className="flex-1 py-6 text-sm sm:text-base bg-gradient-to-r from-indigo-500 to-purple-500 touch-manipulation"
             onClick={() => setLocation("/register")}
             data-testid="button-play-again"
           >

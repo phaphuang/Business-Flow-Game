@@ -4,11 +4,12 @@
 Educational web application teaching Input-Processing-Output (IPO) concepts through interactive challenges for ICDI bachelor students at Chiang Mai University.
 
 ## Architecture
-- **Frontend**: React + TypeScript + Tailwind CSS + Shadcn UI
+- **Frontend**: React + TypeScript + Tailwind CSS + Shadcn UI (mobile-first)
 - **Backend**: Express.js REST API with in-memory caching
 - **Database**: PostgreSQL with Drizzle ORM
 - **Routing**: Wouter (frontend), Express (backend)
 - **State**: React Query for server state (staleTime: Infinity, no refetch on focus)
+- **Mobile**: Touch-optimized, tap-to-assign interactions, safe-area support, PWA meta tags
 
 ## Performance Optimizations
 - Server-side in-memory cache for leaderboard (30s TTL), sessions (10s TTL), responses (15s TTL)
@@ -26,17 +27,31 @@ Educational web application teaching Input-Processing-Output (IPO) concepts thro
 - `client/src/pages/RegistrationPage.tsx` - Student registration
 - `client/src/pages/GamePage.tsx` - Main game interface with 5 interactive types
 - `client/src/pages/ResultsPage.tsx` - Results and leaderboard
-- `client/src/components/game/DragSortChallenge.tsx` - Drag & drop for IPO sort + classification
-- `client/src/components/game/OrderingChallenge.tsx` - Sequence ordering (drag to reorder)
-- `client/src/components/game/MatchingChallenge.tsx` - Click-to-connect pair matching
+- `client/src/components/game/DragSortChallenge.tsx` - Tap-to-assign for IPO sort + classification
+- `client/src/components/game/OrderingChallenge.tsx` - Sequence ordering (up/down buttons)
+- `client/src/components/game/MatchingChallenge.tsx` - Tap-to-connect pair matching
 - `client/src/components/game/CalculationChallenge.tsx` - Numeric input calculation
+- `client/src/components/game/QuestMap.tsx` - Scrollable horizontal quest progress map
+- `client/src/components/game/CelebrationOverlay.tsx` - Answer feedback with confetti
 
-## 5 Interactive Challenge Types
-1. **drag-drop-ipo** - Drag items into Input/Processing/Output zones
-2. **drag-drop-classify** - Drag items into Digital Tool/Technology/Business Concept zones
-3. **ordering** - Drag steps into correct sequence order
-4. **matching** - Click left item then right item to connect pairs (color-coded badges)
-5. **calculation** - Read scenario data and compute numeric answer (with tolerance)
+## 5 Interactive Challenge Types (all touch-friendly)
+1. **drag-drop-ipo** - Tap item to select, tap zone to place (Input/Processing/Output)
+2. **drag-drop-classify** - Tap item to select, tap zone to place (Tool/Technology/Business)
+3. **ordering** - Reorder steps using up/down arrow buttons (44px touch targets)
+4. **matching** - Tap left item then tap right item to connect (color-coded badges)
+5. **calculation** - Numeric input with inputMode=decimal (with tolerance)
+
+## Mobile Optimizations
+- Viewport: width=device-width, user-scalable=no, viewport-fit=cover
+- PWA meta tags: apple-mobile-web-app-capable, theme-color
+- Safe area insets via CSS env() for notched phones
+- touch-action: manipulation on all interactive elements (prevents double-tap zoom)
+- 16px font-size on inputs (prevents iOS auto-zoom)
+- Minimum 44px touch targets on buttons and interactive elements
+- overscroll-behavior: none (prevents pull-to-refresh)
+- Tap-to-dismiss on celebration overlay
+- Responsive typography: text-sm on mobile, text-base on sm+
+- Full-width buttons with py-6 for easy tapping
 
 ## Challenge Data Structure
 Each challenge has:

@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowUp, ArrowDown, GripVertical } from "lucide-react";
+import { ArrowUp, ArrowDown } from "lucide-react";
 import type { Challenge } from "@shared/gameData";
 
 interface Props {
@@ -23,8 +23,6 @@ export default function OrderingChallenge({ challenge, onAnswer, disabled }: Pro
   const [orderedSteps, setOrderedSteps] = useState<typeof challenge.steps>(() =>
     shuffleArray(challenge.steps || [])
   );
-  const [dragIdx, setDragIdx] = useState<number | null>(null);
-  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
 
   const moveStep = useCallback((fromIdx: number, toIdx: number) => {
     if (disabled) return;
@@ -37,28 +35,6 @@ export default function OrderingChallenge({ challenge, onAnswer, disabled }: Pro
     });
   }, [disabled]);
 
-  const handleDragStart = (idx: number, e: React.DragEvent) => {
-    setDragIdx(idx);
-    e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", idx.toString());
-  };
-
-  const handleDragOver = (idx: number, e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-    setDragOverIdx(idx);
-  };
-
-  const handleDrop = (toIdx: number, e: React.DragEvent) => {
-    e.preventDefault();
-    const fromIdx = parseInt(e.dataTransfer.getData("text/plain"));
-    if (!isNaN(fromIdx) && fromIdx !== toIdx) {
-      moveStep(fromIdx, toIdx);
-    }
-    setDragIdx(null);
-    setDragOverIdx(null);
-  };
-
   const handleSubmit = () => {
     if (disabled || !orderedSteps) return;
     const userAnswer = orderedSteps.map(s => s.id);
@@ -68,9 +44,9 @@ export default function OrderingChallenge({ challenge, onAnswer, disabled }: Pro
   };
 
   return (
-    <div className="space-y-5">
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-        Drag steps into the correct order (first to last)
+    <div className="space-y-4">
+      <p className="text-xs sm:text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+        Use the arrows to put steps in the correct order
       </p>
 
       <div className="space-y-2">
@@ -78,46 +54,41 @@ export default function OrderingChallenge({ challenge, onAnswer, disabled }: Pro
           <Card
             key={step.id}
             data-testid={`step-card-${step.id}`}
-            draggable={!disabled}
-            onDragStart={e => handleDragStart(idx, e)}
-            onDragOver={e => handleDragOver(idx, e)}
-            onDragLeave={() => setDragOverIdx(null)}
-            onDrop={e => handleDrop(idx, e)}
-            onDragEnd={() => { setDragIdx(null); setDragOverIdx(null); }}
-            className={`flex items-center gap-3 p-3 cursor-grab active:cursor-grabbing transition-all select-none ${
-              dragIdx === idx ? "opacity-40 scale-95" : ""
-            } ${dragOverIdx === idx && dragIdx !== idx ? "border-primary border-2 bg-primary/5" : ""}`}
+            className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 select-none transition-all"
           >
-            <div className="flex items-center gap-2 shrink-0">
-              <GripVertical className="w-4 h-4 text-slate-400" />
-              <span className="w-7 h-7 rounded-full bg-slate-200 flex items-center justify-center text-sm font-bold text-slate-600">
-                {idx + 1}
-              </span>
-            </div>
-            <span className="text-sm flex-1">{step.text}</span>
-            <div className="flex flex-col gap-0.5 shrink-0">
+            <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-sm sm:text-base font-bold text-indigo-700 shrink-0">
+              {idx + 1}
+            </span>
+            <span className="text-sm sm:text-base flex-1 leading-snug">{step.text}</span>
+            <div className="flex flex-col gap-1 shrink-0">
               <button
                 onClick={() => idx > 0 && moveStep(idx, idx - 1)}
                 disabled={idx === 0 || disabled}
-                className="p-0.5 rounded hover:bg-slate-100 disabled:opacity-30"
+                className="w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 active:bg-slate-300 disabled:opacity-30 transition-colors touch-manipulation"
                 data-testid={`move-up-${step.id}`}
               >
-                <ArrowUp className="w-4 h-4 text-slate-500" />
+                <ArrowUp className="w-5 h-5 sm:w-4 sm:h-4 text-slate-600" />
               </button>
               <button
                 onClick={() => orderedSteps && idx < orderedSteps.length - 1 && moveStep(idx, idx + 1)}
                 disabled={!orderedSteps || idx === orderedSteps.length - 1 || disabled}
-                className="p-0.5 rounded hover:bg-slate-100 disabled:opacity-30"
+                className="w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 active:bg-slate-300 disabled:opacity-30 transition-colors touch-manipulation"
                 data-testid={`move-down-${step.id}`}
               >
-                <ArrowDown className="w-4 h-4 text-slate-500" />
+                <ArrowDown className="w-5 h-5 sm:w-4 sm:h-4 text-slate-600" />
               </button>
             </div>
           </Card>
         ))}
       </div>
 
-      <Button onClick={handleSubmit} disabled={disabled} className="w-full" size="lg" data-testid="button-submit-answer">
+      <Button
+        onClick={handleSubmit}
+        disabled={disabled}
+        className="w-full py-6 text-base touch-manipulation"
+        size="lg"
+        data-testid="button-submit-answer"
+      >
         {disabled ? "Submitting..." : "Submit Order"}
       </Button>
     </div>

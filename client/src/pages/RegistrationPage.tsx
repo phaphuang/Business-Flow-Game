@@ -65,12 +65,12 @@ export default function RegistrationPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md animate-slide-up">
-        <CardHeader className="text-center">
-          <div className="text-6xl mb-2 animate-float">{currentAvatar.emoji}</div>
-          <CardTitle className="text-2xl">Choose Your Character!</CardTitle>
-          <CardDescription>Pick an avatar and enter your info to start the adventure</CardDescription>
+        <CardHeader className="text-center pb-3">
+          <div className="text-5xl sm:text-6xl mb-2 animate-float">{currentAvatar.emoji}</div>
+          <CardTitle className="text-xl sm:text-2xl">Choose Your Character!</CardTitle>
+          <CardDescription className="text-sm">Pick an avatar and enter your info to start</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <Label className="text-sm font-semibold mb-2 block">Your Avatar</Label>
@@ -81,13 +81,13 @@ export default function RegistrationPage() {
                     type="button"
                     data-testid={`avatar-${av.id}`}
                     onClick={() => setSelectedAvatar(av.id)}
-                    className={`flex flex-col items-center gap-1 p-2 rounded-xl border-2 transition-all hover:scale-105 ${
+                    className={`flex flex-col items-center gap-1 p-2 sm:p-2.5 rounded-xl border-2 transition-all active:scale-95 touch-manipulation ${
                       selectedAvatar === av.id
                         ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200 scale-105"
-                        : "border-gray-200 hover:border-gray-300"
+                        : "border-gray-200 active:border-gray-300"
                     }`}
                   >
-                    <span className="text-2xl">{av.emoji}</span>
+                    <span className="text-xl sm:text-2xl">{av.emoji}</span>
                     <span className="text-[10px] font-medium text-gray-600">{av.name}</span>
                   </button>
                 ))}
@@ -103,6 +103,8 @@ export default function RegistrationPage() {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 disabled={registerMutation.isPending}
+                className="h-12 touch-manipulation"
+                autoComplete="name"
               />
             </div>
 
@@ -115,12 +117,14 @@ export default function RegistrationPage() {
                 value={studentId}
                 onChange={(e) => setStudentId(e.target.value)}
                 disabled={registerMutation.isPending}
+                className="h-12 touch-manipulation"
+                inputMode="numeric"
               />
             </div>
 
             <Button
               type="submit"
-              className="w-full text-base py-5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
+              className="w-full text-base py-6 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 touch-manipulation"
               disabled={registerMutation.isPending}
               data-testid="button-start-game"
             >
@@ -137,7 +141,7 @@ export default function RegistrationPage() {
             <Button
               type="button"
               variant="outline"
-              className="w-full"
+              className="w-full py-5 touch-manipulation"
               onClick={() => setLocation("/")}
               disabled={registerMutation.isPending}
               data-testid="button-back"
