@@ -1,8 +1,27 @@
 import type { Express } from "express";
-import { createServer, type Server } from "http";
+import type { Server } from "http";
 import { eq, desc } from "drizzle-orm";
 import { db } from "./db";
 import { students, gameSessions, challengeResponses, insertStudentSchema, insertChallengeResponseSchema } from "@shared/schema";
+
+const cache = new Map<string, { data: any; expiry: number }>();
+
+function getCached(key: string) {
+  const entry = cache.get(key);
+  if (entry && Date.now() < entry.expiry) return entry.data;
+  cache.delete(key);
+  return null;
+}
+
+function setCache(key: string, data: any, ttlMs = 30000) {
+  cache.set(key, { data, expiry: Date.now() + ttlMs });
+}
+
+function invalidateCache(prefix: string) {
+  for (const key of cache.keys()) {
+    if (key.startsWith(prefix)) cache.delete(key);
+  }
+}
 
 export async function registerRoutes(
   httpServer: Server,
@@ -25,10 +44,15 @@ export async function registerRoutes(
 
   app.get("/api/students/:studentId", async (req, res) => {
     try {
+      const cacheKey = `student:${req.params.studentId}`;
+      const cached = getCached(cacheKey);
+      if (cached) return res.json(cached);
+
       const [student] = await db.select().from(students).where(eq(students.studentId, req.params.studentId));
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
+      setCache(cacheKey, student, 60000);
       res.json(student);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
@@ -47,10 +71,15 @@ export async function registerRoutes(
 
   app.get("/api/sessions/:sessionId", async (req, res) => {
     try {
+      const cacheKey = `session:${req.params.sessionId}`;
+      const cached = getCached(cacheKey);
+      if (cached) return res.json(cached);
+
       const [session] = await db.select().from(gameSessions).where(eq(gameSessions.id, req.params.sessionId));
       if (!session) {
         return res.status(404).json({ message: "Session not found" });
       }
+      setCache(cacheKey, session, 10000);
       res.json(session);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
@@ -70,6 +99,9 @@ export async function registerRoutes(
         .set(updateData)
         .where(eq(gameSessions.id, req.params.sessionId))
         .returning();
+
+      invalidateCache(`session:${req.params.sessionId}`);
+      invalidateCache("leaderboard");
       res.json(session);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
@@ -80,6 +112,7 @@ export async function registerRoutes(
     try {
       const data = insertChallengeResponseSchema.parse(req.body);
       const [response] = await db.insert(challengeResponses).values(data).returning();
+      invalidateCache(`responses:${data.sessionId}`);
       res.json(response);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -88,10 +121,16 @@ export async function registerRoutes(
 
   app.get("/api/sessions/:sessionId/responses", async (req, res) => {
     try {
+      const cacheKey = `responses:${req.params.sessionId}`;
+      const cached = getCached(cacheKey);
+      if (cached) return res.json(cached);
+
       const responses = await db.select()
         .from(challengeResponses)
         .where(eq(challengeResponses.sessionId, req.params.sessionId))
         .orderBy(desc(challengeResponses.answeredAt));
+
+      setCache(cacheKey, responses, 15000);
       res.json(responses);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
@@ -112,6 +151,10 @@ export async function registerRoutes(
 
   app.get("/api/leaderboard", async (req, res) => {
     try {
+      const cacheKey = "leaderboard";
+      const cached = getCached(cacheKey);
+      if (cached) return res.json(cached);
+
       const results = await db
         .select({
           sessionId: gameSessions.id,
@@ -127,6 +170,8 @@ export async function registerRoutes(
         .where(eq(gameSessions.isCompleted, true))
         .orderBy(desc(gameSessions.totalScore))
         .limit(10);
+
+      setCache(cacheKey, results, 30000);
       res.json(results);
     } catch (error: any) {
       res.status(500).json({ message: error.message });

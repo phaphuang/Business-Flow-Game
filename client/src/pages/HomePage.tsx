@@ -35,10 +35,10 @@ export default function HomePage() {
           <Card data-testid="card-info-challenges">
             <CardHeader className="pb-3">
               <Target className="w-8 h-8 text-green-600 mb-2" />
-              <CardTitle className="text-lg">15 Challenges</CardTitle>
+              <CardTitle className="text-lg">30 Challenges</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">Drag & drop, multiple choice, scenarios, classification</p>
+              <p className="text-sm text-gray-600">Multiple choice questions across IPO concepts and digital business</p>
             </CardContent>
           </Card>
 
@@ -55,7 +55,7 @@ export default function HomePage() {
           <Card data-testid="card-info-points">
             <CardHeader className="pb-3">
               <Trophy className="w-8 h-8 text-yellow-600 mb-2" />
-              <CardTitle className="text-lg">2,250 Points</CardTitle>
+              <CardTitle className="text-lg">4,500 Points</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600">Track your score and compete with classmates</p>
@@ -115,25 +115,21 @@ export default function HomePage() {
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-xl">Challenge Types</CardTitle>
+            <CardTitle className="text-xl">What You Will Be Tested On</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-3 gap-4">
               <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-blue-700">Drag & Drop (IPO Categorization)</h4>
-                <p className="text-sm text-gray-600">Sort components into Input, Processing, or Output categories</p>
+                <h4 className="font-semibold mb-1 text-blue-700">IPO Categorization</h4>
+                <p className="text-sm text-gray-600">Identify whether components are Input, Processing, or Output</p>
               </div>
               <div className="p-4 bg-green-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-green-700">Multiple Choice</h4>
-                <p className="text-sm text-gray-600">Answer questions about digital technologies and strategies</p>
+                <h4 className="font-semibold mb-1 text-green-700">Digital Classification</h4>
+                <p className="text-sm text-gray-600">Distinguish Digital Tools, Technologies, and Business Concepts</p>
               </div>
               <div className="p-4 bg-purple-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-purple-700">Scenario-Based</h4>
-                <p className="text-sm text-gray-600">Apply IPO concepts to solve real business challenges</p>
-              </div>
-              <div className="p-4 bg-amber-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-amber-700">Classification</h4>
-                <p className="text-sm text-gray-600">Classify items as Digital Tools, Technologies, or Business Concepts</p>
+                <h4 className="font-semibold mb-1 text-purple-700">Scenario Analysis</h4>
+                <p className="text-sm text-gray-600">Apply IPO thinking to real platform challenges and strategies</p>
               </div>
             </div>
           </CardContent>

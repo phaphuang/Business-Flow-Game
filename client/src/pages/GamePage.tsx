@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,11 +6,14 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { businessCases, challenges } from "@shared/gameData";
-import DragDropChallenge from "@/components/game/DragDropChallenge";
 import MultipleChoiceChallenge from "@/components/game/MultipleChoiceChallenge";
-import ClassificationChallenge from "@/components/game/ClassificationChallenge";
 import { Trophy, Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+
+const businessCasesByS = Object.values(businessCases).reduce((acc, bc) => {
+  acc[bc.sector] = bc;
+  return acc;
+}, {} as Record<string, (typeof businessCases)[keyof typeof businessCases]>);
 
 export default function GamePage() {
   const [, params] = useRoute("/game/:sessionId");
@@ -28,7 +31,7 @@ export default function GamePage() {
   const [feedbackExplanation, setFeedbackExplanation] = useState("");
 
   const currentChallenge = currentChallengeIndex < challenges.length ? challenges[currentChallengeIndex] : null;
-  const progress = ((currentChallengeIndex) / challenges.length) * 100;
+  const progress = useMemo(() => (currentChallengeIndex / challenges.length) * 100, [currentChallengeIndex]);
 
   const { data: session, isLoading: sessionLoading } = useQuery({
     queryKey: ["/api/sessions", sessionId],
@@ -122,9 +125,7 @@ export default function GamePage() {
     );
   }
 
-  const businessCase = Object.values(businessCases).find(
-    bc => bc.sector === currentChallenge.sector
-  );
+  const businessCase = businessCasesByS[currentChallenge.sector];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8">
@@ -150,7 +151,7 @@ export default function GamePage() {
         <Card className="mb-6">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-full ${businessCase?.color || 'bg-blue-500'} flex items-center justify-center text-2xl text-white`}>
+              <div className={`w-12 h-12 rounded-full ${businessCase?.color || 'bg-blue-500'} flex items-center justify-center text-2xl text-white font-bold`}>
                 {businessCase?.icon}
               </div>
               <div>
@@ -184,9 +185,7 @@ export default function GamePage() {
                     {currentChallenge.points} points
                   </Badge>
                   <Badge variant="outline" data-testid="badge-type">
-                    {currentChallenge.type === 'drag-drop' ? 'Drag & Drop' :
-                     currentChallenge.type === 'multiple-choice' ? 'Multiple Choice' :
-                     currentChallenge.type === 'scenario' ? 'Scenario' : 'Classification'}
+                    Multiple Choice
                   </Badge>
                 </div>
                 <CardTitle className="text-lg" data-testid="text-question">{currentChallenge.question}</CardTitle>
@@ -194,30 +193,12 @@ export default function GamePage() {
             </div>
           </CardHeader>
           <CardContent>
-            {(currentChallenge.type === "drag-drop") && (
-              <DragDropChallenge
-                key={currentChallenge.id}
-                challenge={currentChallenge}
-                onAnswer={handleAnswer}
-                disabled={isSubmitting}
-              />
-            )}
-            {(currentChallenge.type === "multiple-choice" || currentChallenge.type === "scenario") && (
-              <MultipleChoiceChallenge
-                key={currentChallenge.id}
-                challenge={currentChallenge}
-                onAnswer={handleAnswer}
-                disabled={isSubmitting}
-              />
-            )}
-            {currentChallenge.type === "classification" && (
-              <ClassificationChallenge
-                key={currentChallenge.id}
-                challenge={currentChallenge}
-                onAnswer={handleAnswer}
-                disabled={isSubmitting}
-              />
-            )}
+            <MultipleChoiceChallenge
+              key={currentChallenge.id}
+              challenge={currentChallenge}
+              onAnswer={handleAnswer}
+              disabled={isSubmitting}
+            />
           </CardContent>
         </Card>
       </div>
