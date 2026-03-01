@@ -1,16 +1,17 @@
 import { useState, useCallback, useMemo } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { businessCases, challenges } from "@shared/gameData";
+import { businessCases, challenges, AVATARS } from "@shared/gameData";
 import DragSortChallenge from "@/components/game/DragSortChallenge";
 import OrderingChallenge from "@/components/game/OrderingChallenge";
 import MatchingChallenge from "@/components/game/MatchingChallenge";
 import CalculationChallenge from "@/components/game/CalculationChallenge";
-import { Trophy, Loader2, UserCircle, Target } from "lucide-react";
+import QuestMap from "@/components/game/QuestMap";
+import CelebrationOverlay from "@/components/game/CelebrationOverlay";
+import { Loader2, Swords, Puzzle, Link2, Calculator, GripVertical } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
 const businessCasesByS = Object.values(businessCases).reduce((acc, bc) => {
@@ -18,12 +19,26 @@ const businessCasesByS = Object.values(businessCases).reduce((acc, bc) => {
   return acc;
 }, {} as Record<string, (typeof businessCases)[keyof typeof businessCases]>);
 
+const TYPE_ICONS: Record<string, any> = {
+  "drag-drop-ipo": Swords,
+  "drag-drop-classify": Puzzle,
+  "ordering": GripVertical,
+  "matching": Link2,
+  "calculation": Calculator,
+};
+
 const TYPE_LABELS: Record<string, string> = {
-  "drag-drop-ipo": "Drag & Drop: IPO Sort",
-  "drag-drop-classify": "Drag & Drop: Classification",
-  "ordering": "Sequence Ordering",
-  "matching": "Connection Matching",
-  "calculation": "Calculation",
+  "drag-drop-ipo": "Sort into Categories",
+  "drag-drop-classify": "Classify Items",
+  "ordering": "Put in Order",
+  "matching": "Connect the Pairs",
+  "calculation": "Do the Math",
+};
+
+const DIFFICULTY_STARS: Record<string, string> = {
+  easy: "\u2B50",
+  medium: "\u2B50\u2B50",
+  hard: "\u2B50\u2B50\u2B50",
 };
 
 export default function GamePage() {
@@ -37,12 +52,14 @@ export default function GamePage() {
   const [startTime] = useState(Date.now());
   const [challengeStartTime, setChallengeStartTime] = useState(Date.now());
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [feedbackCorrect, setFeedbackCorrect] = useState(false);
-  const [feedbackExplanation, setFeedbackExplanation] = useState("");
+  const [completedIndexes, setCompletedIndexes] = useState<Set<number>>(new Set());
+  const [celebration, setCelebration] = useState<{ isCorrect: boolean; points: number; explanation: string } | null>(null);
+
+  const avatarId = localStorage.getItem("ipo_avatar") || "ninja";
+  const avatarEmoji = AVATARS.find(a => a.id === avatarId)?.emoji || "\u{1F977}";
 
   const currentChallenge = currentChallengeIndex < challenges.length ? challenges[currentChallengeIndex] : null;
-  const progress = useMemo(() => (currentChallengeIndex / challenges.length) * 100, [currentChallengeIndex]);
+  const progress = useMemo(() => Math.round((currentChallengeIndex / challenges.length) * 100), [currentChallengeIndex]);
 
   const { data: session, isLoading: sessionLoading } = useQuery({
     queryKey: ["/api/sessions", sessionId],
@@ -84,9 +101,13 @@ export default function GamePage() {
       });
 
       setTotalScore(newTotalScore);
-      setFeedbackCorrect(isCorrect);
-      setFeedbackExplanation(currentChallenge.explanation);
-      setShowFeedback(true);
+      setCompletedIndexes(prev => new Set(prev).add(currentChallengeIndex));
+
+      setCelebration({
+        isCorrect,
+        points: pointsEarned,
+        explanation: currentChallenge.explanation,
+      });
 
       const isLastChallenge = currentChallengeIndex >= challenges.length - 1;
 
@@ -99,109 +120,126 @@ export default function GamePage() {
           completedAt: new Date().toISOString(),
         });
       }
-
-      setTimeout(() => {
-        setShowFeedback(false);
-        if (isLastChallenge) {
-          setLocation(`/results/${sessionId}`);
-        } else {
-          setCurrentChallengeIndex(prev => prev + 1);
-          setChallengeStartTime(Date.now());
-          setIsSubmitting(false);
-        }
-      }, 4000);
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to submit answer. Please try again.",
+        title: "Oops!",
+        description: "Failed to save your answer. Please try again.",
         variant: "destructive",
       });
       setIsSubmitting(false);
     }
   }, [isSubmitting, currentChallenge, challengeStartTime, totalScore, sessionId, currentChallengeIndex, startTime]);
 
-  if (sessionLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center" data-testid="loading-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  const handleCelebrationComplete = useCallback(() => {
+    setCelebration(null);
+    const isLastChallenge = currentChallengeIndex >= challenges.length - 1;
+    if (isLastChallenge) {
+      setLocation(`/results/${sessionId}`);
+    } else {
+      setCurrentChallengeIndex(prev => prev + 1);
+      setChallengeStartTime(Date.now());
+      setIsSubmitting(false);
+    }
+  }, [currentChallengeIndex, sessionId]);
 
-  if (!currentChallenge) {
+  if (sessionLoading || !currentChallenge) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 flex items-center justify-center" data-testid="loading-screen">
+        <div className="text-center animate-bounce-in">
+          <div className="text-6xl mb-4 animate-walk">{avatarEmoji}</div>
+          <p className="text-lg text-gray-600 font-medium">Loading your quest...</p>
+        </div>
       </div>
     );
   }
 
   const businessCase = businessCasesByS[currentChallenge.sector];
+  const TypeIcon = TYPE_ICONS[currentChallenge.type] || Swords;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-6">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 py-4">
+      {celebration && (
+        <CelebrationOverlay
+          isCorrect={celebration.isCorrect}
+          points={celebration.points}
+          explanation={celebration.explanation}
+          avatar={avatarEmoji}
+          onComplete={handleCelebrationComplete}
+        />
+      )}
+
       <div className="container mx-auto px-4 max-w-4xl">
-        <div className="mb-5">
-          <div className="flex justify-between items-center mb-3">
+        <div className="flex justify-between items-center mb-2 px-1">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">{avatarEmoji}</span>
             <div>
-              <h1 className="text-xl font-bold text-gray-900" data-testid="text-game-title">IPO Learning Game</h1>
-              <p className="text-sm text-gray-600" data-testid="text-challenge-counter">
-                Challenge {currentChallengeIndex + 1} of {challenges.length}
+              <h1 className="text-sm font-bold text-gray-900" data-testid="text-game-title">IPO Quest</h1>
+              <p className="text-xs text-gray-500" data-testid="text-challenge-counter">
+                Quest {currentChallengeIndex + 1} of {challenges.length}
               </p>
             </div>
-            <div className="flex items-center gap-2" data-testid="text-score">
-              <Trophy className="w-5 h-5 text-yellow-600" />
-              <span className="font-semibold">{totalScore} pts</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="text-right">
+              <div className="text-xs text-gray-500">Score</div>
+              <div className="font-bold text-indigo-600" data-testid="text-score">{totalScore} pts</div>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-400 flex items-center justify-center text-lg border-2 border-yellow-500">
+              🏆
             </div>
           </div>
-          <Progress value={progress} className="h-2" data-testid="progress-bar" />
         </div>
 
-        <Card className="mb-4">
-          <CardHeader className="pb-3 pt-4">
-            <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-full ${businessCase?.color || 'bg-blue-500'} flex items-center justify-center text-lg text-white font-bold shrink-0`}>
-                {businessCase?.icon}
+        <div className="mb-2">
+          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden" data-testid="progress-bar">
+            <div
+              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-700 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div className="flex justify-between text-[10px] text-gray-400 mt-0.5 px-1">
+            <span>Start</span>
+            <span>{progress}% complete</span>
+            <span>Finish!</span>
+          </div>
+        </div>
+
+        <QuestMap currentIndex={currentChallengeIndex} completedIndexes={completedIndexes} avatar={avatarEmoji} />
+
+        <Card className="mb-3 overflow-hidden animate-slide-up" key={currentChallenge.id}>
+          <div className={`h-1.5 ${businessCase?.color || "bg-indigo-500"}`} />
+          <CardHeader className="pb-2 pt-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">{businessCase?.emoji}</span>
+                <div>
+                  <div className="font-bold text-base" data-testid="text-company-name">{businessCase?.name}</div>
+                  <div className="text-xs text-muted-foreground" data-testid="text-quest-name">{businessCase?.questName}</div>
+                </div>
               </div>
-              <div className="flex-1">
-                <CardTitle className="text-lg" data-testid="text-company-name">{businessCase?.name}</CardTitle>
-                <p className="text-xs text-muted-foreground" data-testid="text-company-description">{businessCase?.description}</p>
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <Badge variant="secondary" data-testid="badge-difficulty">{currentChallenge.difficulty}</Badge>
-                <Badge variant="outline" data-testid="badge-points">{currentChallenge.points} pts</Badge>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs">{DIFFICULTY_STARS[currentChallenge.difficulty]}</span>
+                <Badge variant="outline" className="text-xs" data-testid="badge-points">{currentChallenge.points} pts</Badge>
               </div>
             </div>
           </CardHeader>
-        </Card>
-
-        {showFeedback && (
-          <Card className={`mb-4 border-2 ${feedbackCorrect ? 'border-green-500 bg-green-50' : 'border-red-400 bg-red-50'}`} data-testid="card-feedback">
-            <CardContent className="pt-5 pb-4">
-              <h3 className={`font-bold text-lg mb-2 ${feedbackCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                {feedbackCorrect ? "Correct!" : "Not Quite Right"}
-              </h3>
-              <p className="text-sm text-gray-700">{feedbackExplanation}</p>
-            </CardContent>
-          </Card>
-        )}
-
-        <Card>
-          <CardHeader className="pb-2 pt-4">
-            <Badge variant="outline" className="w-fit mb-2 bg-indigo-50 text-indigo-700 border-indigo-200" data-testid="badge-type">
-              {TYPE_LABELS[currentChallenge.type] || currentChallenge.type}
-            </Badge>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-200 rounded-md w-fit" data-testid="text-role">
-              <UserCircle className="w-4 h-4 text-indigo-600 shrink-0" />
-              <span className="text-xs font-semibold text-indigo-700">Your Role: {currentChallenge.role}</span>
+          <CardContent className="space-y-3 pt-0">
+            <div className="flex items-center gap-2">
+              <TypeIcon className="w-4 h-4 text-indigo-500 shrink-0" />
+              <Badge variant="secondary" className="text-xs" data-testid="badge-type">
+                {TYPE_LABELS[currentChallenge.type]}
+              </Badge>
+              <Badge variant="outline" className="text-xs bg-indigo-50 text-indigo-700 border-indigo-200" data-testid="text-role">
+                {currentChallenge.role}
+              </Badge>
             </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-slate-700 leading-relaxed" data-testid="text-scenario">
-              {currentChallenge.scenario}
-            </p>
-            <div className="flex items-start gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-md" data-testid="text-mission">
-              <Target className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+
+            <div className="bg-white/60 rounded-lg p-3 border border-gray-200" data-testid="text-scenario">
+              <p className="text-sm text-gray-700 leading-relaxed">{currentChallenge.scenario}</p>
+            </div>
+
+            <div className="flex items-start gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg" data-testid="text-mission">
+              <span className="text-base shrink-0">🎯</span>
               <span className="text-sm font-semibold text-amber-800">{currentChallenge.mission}</span>
             </div>
 

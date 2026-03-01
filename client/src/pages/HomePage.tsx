@@ -1,143 +1,117 @@
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Trophy, Clock, Target } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function HomePage() {
   const [, setLocation] = useLocation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <div className="container mx-auto px-4 py-12 max-w-6xl">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4" data-testid="text-main-title">
-            IPO Learning Game
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
+      <div className="container mx-auto px-4 py-10 max-w-5xl">
+        <div className="text-center mb-10 animate-slide-up">
+          <div className="text-7xl mb-4 animate-float">🎮</div>
+          <h1 className="text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3" data-testid="text-main-title">
+            IPO Quest
           </h1>
-          <p className="text-xl text-gray-600 mb-2" data-testid="text-subtitle">
-            Master Input-Processing-Output Concepts in Digital Business Ecosystems
+          <p className="text-xl text-gray-600 mb-1" data-testid="text-subtitle">
+            Learn How Digital Businesses Really Work
           </p>
-          <p className="text-lg text-gray-500">
-            International College of Digital Innovation - Chiang Mai University
+          <p className="text-sm text-gray-500">
+            ICDI - Chiang Mai University
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <Card data-testid="card-info-cases">
-            <CardHeader className="pb-3">
-              <BookOpen className="w-8 h-8 text-blue-600 mb-2" />
-              <CardTitle className="text-lg">5 Business Cases</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">Netflix, Spotify, Grab, Shopify, Airbnb</p>
-            </CardContent>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+          <Card className="text-center p-4 hover:scale-105 transition-transform" data-testid="card-info-cases">
+            <div className="text-3xl mb-2">🌍</div>
+            <div className="font-bold text-lg">5 Worlds</div>
+            <p className="text-xs text-gray-500">Real companies to explore</p>
           </Card>
-
-          <Card data-testid="card-info-challenges">
-            <CardHeader className="pb-3">
-              <Target className="w-8 h-8 text-green-600 mb-2" />
-              <CardTitle className="text-lg">30 Interactive Challenges</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">Drag-and-drop, ordering, matching, and calculation puzzles</p>
-            </CardContent>
+          <Card className="text-center p-4 hover:scale-105 transition-transform" data-testid="card-info-challenges">
+            <div className="text-3xl mb-2">⚔️</div>
+            <div className="font-bold text-lg">30 Quests</div>
+            <p className="text-xs text-gray-500">Interactive challenges</p>
           </Card>
-
-          <Card data-testid="card-info-time">
-            <CardHeader className="pb-3">
-              <Clock className="w-8 h-8 text-orange-600 mb-2" />
-              <CardTitle className="text-lg">30-45 Minutes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">Complete at your own pace with hands-on activities</p>
-            </CardContent>
+          <Card className="text-center p-4 hover:scale-105 transition-transform" data-testid="card-info-time">
+            <div className="text-3xl mb-2">⏱️</div>
+            <div className="font-bold text-lg">30-45 min</div>
+            <p className="text-xs text-gray-500">Go at your own pace</p>
           </Card>
-
-          <Card data-testid="card-info-points">
-            <CardHeader className="pb-3">
-              <Trophy className="w-8 h-8 text-yellow-600 mb-2" />
-              <CardTitle className="text-lg">4,500 Points</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">Track your score and compete with classmates</p>
-            </CardContent>
+          <Card className="text-center p-4 hover:scale-105 transition-transform" data-testid="card-info-points">
+            <div className="text-3xl mb-2">🏆</div>
+            <div className="font-bold text-lg">4,500 pts</div>
+            <p className="text-xs text-gray-500">Compete with classmates</p>
           </Card>
         </div>
 
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="text-2xl">What You Will Learn</CardTitle>
-            <CardDescription>Apply IPO framework to real-world digital platforms</CardDescription>
+        <Card className="mb-8 overflow-hidden">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl">🗺️ Your Adventure Map</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid="case-netflix">
-                <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white text-lg font-bold shrink-0">N</div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Netflix</h3>
-                  <p className="text-sm text-gray-600">Content delivery platform serving 300M+ subscribers with Open Connect CDN</p>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+              {[
+                { emoji: "🎬", name: "Netflix", quest: "Streaming Kingdom", desc: "How 300M people get their shows", color: "from-red-50 to-red-100 border-red-200" },
+                { emoji: "🎵", name: "Spotify", quest: "Music Forest", desc: "AI that knows your music taste", color: "from-green-50 to-green-100 border-green-200" },
+                { emoji: "🚗", name: "Grab", quest: "City Rush", desc: "Rides, food, and payments in one app", color: "from-emerald-50 to-emerald-100 border-emerald-200" },
+                { emoji: "🛒", name: "Shopify", quest: "Market Square", desc: "Build your own online store", color: "from-purple-50 to-purple-100 border-purple-200" },
+                { emoji: "🏡", name: "Airbnb", quest: "Travel World", desc: "Stay anywhere on Earth", color: "from-pink-50 to-pink-100 border-pink-200" },
+              ].map((c, i) => (
+                <div key={c.name} className={`p-3 rounded-xl bg-gradient-to-b ${c.color} border text-center hover:scale-105 transition-transform`} data-testid={`case-${c.name.toLowerCase()}`}>
+                  <div className="text-3xl mb-1">{c.emoji}</div>
+                  <div className="font-bold text-sm">{c.name}</div>
+                  <div className="text-[10px] font-semibold text-gray-500 mb-1">{c.quest}</div>
+                  <p className="text-[11px] text-gray-600">{c.desc}</p>
                 </div>
-              </div>
-
-              <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid="case-spotify">
-                <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white text-lg font-bold shrink-0">S</div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Spotify</h3>
-                  <p className="text-sm text-gray-600">AI-powered music recommendation system with 600M+ users</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid="case-grab">
-                <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-lg font-bold shrink-0">G</div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Grab</h3>
-                  <p className="text-sm text-gray-600">Southeast Asia's super-app combining ride-hailing, delivery, and fintech</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid="case-shopify">
-                <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white text-lg font-bold shrink-0">Sh</div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Shopify</h3>
-                  <p className="text-sm text-gray-600">E-commerce platform powering 5.6M+ merchant stores globally</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid="case-airbnb">
-                <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white text-lg font-bold shrink-0">A</div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Airbnb</h3>
-                  <p className="text-sm text-gray-600">Two-sided marketplace connecting hosts and guests worldwide</p>
-                </div>
-              </div>
+              ))}
             </div>
           </CardContent>
         </Card>
 
         <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="text-xl">5 Interactive Challenge Types</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl">🎯 How You'll Play</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-blue-700">Drag & Drop: IPO Sort</h4>
-                <p className="text-sm text-gray-600">Drag components into Input, Processing, or Output zones</p>
-              </div>
-              <div className="p-4 bg-purple-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-purple-700">Drag & Drop: Classification</h4>
-                <p className="text-sm text-gray-600">Classify items as Digital Tool, Technology, or Business Concept</p>
-              </div>
-              <div className="p-4 bg-green-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-green-700">Sequence Ordering</h4>
-                <p className="text-sm text-gray-600">Arrange pipeline steps in the correct IPO sequence</p>
-              </div>
-              <div className="p-4 bg-amber-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-amber-700">Connection Matching</h4>
-                <p className="text-sm text-gray-600">Draw connections between components and their descriptions</p>
-              </div>
-              <div className="p-4 bg-rose-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-rose-700">Calculation</h4>
-                <p className="text-sm text-gray-600">Compute real metrics like bandwidth, streams, and scale numbers</p>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              {[
+                { emoji: "📦", name: "Drag & Drop", desc: "Sort items into the right boxes" },
+                { emoji: "🏷️", name: "Classify", desc: "Put things in the right category" },
+                { emoji: "📋", name: "Put in Order", desc: "Arrange steps in sequence" },
+                { emoji: "🔗", name: "Connect Pairs", desc: "Match items that go together" },
+                { emoji: "🧮", name: "Calculate", desc: "Solve real-world math problems" },
+              ].map(t => (
+                <div key={t.name} className="p-3 bg-white rounded-xl border text-center hover:shadow-md transition-shadow">
+                  <div className="text-2xl mb-1">{t.emoji}</div>
+                  <div className="font-semibold text-xs">{t.name}</div>
+                  <p className="text-[11px] text-gray-500 mt-0.5">{t.desc}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="mb-8 bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <div className="text-3xl mb-2">💡</div>
+              <h3 className="font-bold text-lg mb-2">What is IPO?</h3>
+              <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
+                <div className="text-center">
+                  <div className="w-12 h-12 mx-auto rounded-full bg-blue-100 flex items-center justify-center text-xl mb-1">📥</div>
+                  <div className="font-bold text-sm text-blue-700">Input</div>
+                  <p className="text-[11px] text-gray-600">Data going IN</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 mx-auto rounded-full bg-purple-100 flex items-center justify-center text-xl mb-1">⚙️</div>
+                  <div className="font-bold text-sm text-purple-700">Processing</div>
+                  <p className="text-[11px] text-gray-600">Work being done</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 mx-auto rounded-full bg-green-100 flex items-center justify-center text-xl mb-1">📤</div>
+                  <div className="font-bold text-sm text-green-700">Output</div>
+                  <p className="text-[11px] text-gray-600">Results coming OUT</p>
+                </div>
               </div>
             </div>
           </CardContent>
@@ -146,11 +120,11 @@ export default function HomePage() {
         <div className="text-center">
           <Button
             size="lg"
-            className="text-lg px-8 py-6"
+            className="text-lg px-10 py-7 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all hover:scale-105 rounded-xl"
             onClick={() => setLocation("/register")}
             data-testid="button-start"
           >
-            Start Learning Journey
+            Start Your Adventure! 🚀
           </Button>
         </div>
       </div>
