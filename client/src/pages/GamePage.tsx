@@ -1,12 +1,12 @@
 import { useState, useCallback, useMemo } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { businessCases, challenges } from "@shared/gameData";
-import MultipleChoiceChallenge from "@/components/game/MultipleChoiceChallenge";
+import ScenarioChallenge from "@/components/game/ScenarioChallenge";
 import { Trophy, Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -135,7 +135,7 @@ export default function GamePage() {
             <div>
               <h1 className="text-2xl font-bold text-gray-900" data-testid="text-game-title">IPO Learning Game</h1>
               <p className="text-sm text-gray-600" data-testid="text-challenge-counter">
-                Challenge {currentChallengeIndex + 1} of {challenges.length}
+                Scenario {currentChallengeIndex + 1} of {challenges.length}
               </p>
             </div>
             <div className="flex gap-4 items-center">
@@ -156,7 +156,7 @@ export default function GamePage() {
               </div>
               <div>
                 <CardTitle className="text-xl" data-testid="text-company-name">{businessCase?.name}</CardTitle>
-                <CardDescription data-testid="text-company-description">{businessCase?.description}</CardDescription>
+                <p className="text-sm text-muted-foreground" data-testid="text-company-description">{businessCase?.description}</p>
               </div>
             </div>
           </CardHeader>
@@ -166,7 +166,7 @@ export default function GamePage() {
           <Card className={`mb-6 border-2 ${feedbackCorrect ? 'border-green-500 bg-green-50' : 'border-red-400 bg-red-50'}`} data-testid="card-feedback">
             <CardContent className="pt-6">
               <h3 className={`font-bold text-lg mb-2 ${feedbackCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                {feedbackCorrect ? "Correct!" : "Incorrect"}
+                {feedbackCorrect ? "Correct Decision!" : "Not Quite Right"}
               </h3>
               <p className="text-sm text-gray-700">{feedbackExplanation}</p>
             </CardContent>
@@ -174,26 +174,21 @@ export default function GamePage() {
         )}
 
         <Card>
-          <CardHeader>
-            <div className="flex justify-between items-start">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="secondary" data-testid="badge-difficulty">
-                    {currentChallenge.difficulty}
-                  </Badge>
-                  <Badge variant="outline" data-testid="badge-points">
-                    {currentChallenge.points} points
-                  </Badge>
-                  <Badge variant="outline" data-testid="badge-type">
-                    Multiple Choice
-                  </Badge>
-                </div>
-                <CardTitle className="text-lg" data-testid="text-question">{currentChallenge.question}</CardTitle>
-              </div>
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" data-testid="badge-difficulty">
+                {currentChallenge.difficulty}
+              </Badge>
+              <Badge variant="outline" data-testid="badge-points">
+                {currentChallenge.points} pts
+              </Badge>
+              <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200" data-testid="badge-type">
+                Scenario
+              </Badge>
             </div>
           </CardHeader>
           <CardContent>
-            <MultipleChoiceChallenge
+            <ScenarioChallenge
               key={currentChallenge.id}
               challenge={currentChallenge}
               onAnswer={handleAnswer}

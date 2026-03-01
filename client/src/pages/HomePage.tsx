@@ -35,10 +35,10 @@ export default function HomePage() {
           <Card data-testid="card-info-challenges">
             <CardHeader className="pb-3">
               <Target className="w-8 h-8 text-green-600 mb-2" />
-              <CardTitle className="text-lg">30 Challenges</CardTitle>
+              <CardTitle className="text-lg">30 Scenarios</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">Multiple choice questions across IPO concepts and digital business</p>
+              <p className="text-sm text-gray-600">Role-play real business situations and make strategic decisions</p>
             </CardContent>
           </Card>
 
@@ -115,21 +115,21 @@ export default function HomePage() {
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-xl">What You Will Be Tested On</CardTitle>
+            <CardTitle className="text-xl">How It Works</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-3 gap-4">
-              <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-blue-700">IPO Categorization</h4>
-                <p className="text-sm text-gray-600">Identify whether components are Input, Processing, or Output</p>
+              <div className="p-4 bg-indigo-50 rounded-lg">
+                <h4 className="font-semibold mb-1 text-indigo-700">1. Play a Role</h4>
+                <p className="text-sm text-gray-600">Step into roles like Data Engineer, CTO, Strategy Director, and more</p>
+              </div>
+              <div className="p-4 bg-amber-50 rounded-lg">
+                <h4 className="font-semibold mb-1 text-amber-700">2. Read the Scenario</h4>
+                <p className="text-sm text-gray-600">Face realistic business challenges drawn from real platform operations</p>
               </div>
               <div className="p-4 bg-green-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-green-700">Digital Classification</h4>
-                <p className="text-sm text-gray-600">Distinguish Digital Tools, Technologies, and Business Concepts</p>
-              </div>
-              <div className="p-4 bg-purple-50 rounded-lg">
-                <h4 className="font-semibold mb-1 text-purple-700">Scenario Analysis</h4>
-                <p className="text-sm text-gray-600">Apply IPO thinking to real platform challenges and strategies</p>
+                <h4 className="font-semibold mb-1 text-green-700">3. Make Your Decision</h4>
+                <p className="text-sm text-gray-600">Apply IPO concepts, classify technologies, and solve strategic problems</p>
               </div>
             </div>
           </CardContent>
