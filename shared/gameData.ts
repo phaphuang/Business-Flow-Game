@@ -300,7 +300,7 @@ export const challenges: Challenge[] = [
     points: 200,
     role: "AI Connector",
     scenario: "Spotify uses different AI techniques for different jobs. Match each technique to what it actually does!",
-    mission: "Connect each AI method to its real purpose.",
+    mission: "Connect each AI method on the left to its real purpose on the right.",
     pairs: [
       { id: "sm1", left: "Collaborative Filtering", right: "Finds people with similar taste to recommend songs" },
       { id: "sm2", left: "Audio Analysis AI", right: "Listens to the actual sound of songs for patterns" },
@@ -427,7 +427,7 @@ export const challenges: Challenge[] = [
     points: 200,
     role: "Strategy Connector",
     scenario: "Grab offers many different services. Each one uses a smart business strategy. Match them up!",
-    mission: "Connect each Grab service to the business idea behind it.",
+    mission: "Connect each Grab service on the left to the business idea behind it on the right.",
     pairs: [
       { id: "gm1", left: "GrabCar (ride-hailing)", right: "Connecting riders and drivers in a marketplace" },
       { id: "gm2", left: "GrabFood (delivery)", right: "Expanding from rides into food delivery" },
@@ -554,7 +554,7 @@ export const challenges: Challenge[] = [
     points: 200,
     role: "Architecture Guide",
     scenario: "Shopify's system has many specialized parts. Each one does a specific job. Match them up!",
-    mission: "Connect each system part to what it does.",
+    mission: "Connect each system part on the left to what it does on the right.",
     pairs: [
       { id: "smm1", left: "Database (stores all data)", right: "Saves product info, orders, and customer details permanently" },
       { id: "smm2", left: "Fast memory cache", right: "Keeps frequently used data ready for instant access" },

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -54,7 +54,11 @@ export default function GamePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [completedIndexes, setCompletedIndexes] = useState<Set<number>>(new Set());
   const [celebration, setCelebration] = useState<{ isCorrect: boolean; points: number; explanation: string } | null>(null);
+  const [isLastChallenge, setIsLastChallenge] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(true);
 
+  // 1. Remove localStorage save effect
+  // 2. Remove localStorage mount effect
   const avatarId = localStorage.getItem("ipo_avatar") || "ninja";
   const avatarEmoji = AVATARS.find(a => a.id === avatarId)?.emoji || "\uD83E\uDD77";
 
@@ -65,6 +69,45 @@ export default function GamePage() {
     queryKey: ["/api/sessions", sessionId],
     enabled: !!sessionId,
   });
+
+  // Fetch saved responses to restore progress on refresh
+  const { data: savedResponses, isSuccess: isResponsesLoaded, isFetching } = useQuery<any[]>({
+    queryKey: ["/api/sessions", sessionId, "responses"],
+    enabled: !!sessionId,
+  });
+
+  // Restore progress from DB responses on mount
+  useEffect(() => {
+    if (isResponsesLoaded && savedResponses && !isFetching) {
+      if (savedResponses.length > 0) {
+        const completed = new Set<number>();
+        let score = 0;
+        
+        savedResponses.forEach((response: any) => {
+          const challengeIndex = challenges.findIndex(c => c.id === response.challengeId);
+          if (challengeIndex !== -1) {
+            completed.add(challengeIndex);
+            score += response.pointsEarned;
+          }
+        });
+        
+        setCompletedIndexes(completed);
+        setTotalScore(score);
+        
+        // Find next uncompleted challenge
+        const nextIndex = challenges.findIndex((_, i) => !completed.has(i));
+        if (nextIndex !== -1) {
+          setCurrentChallengeIndex(nextIndex);
+        } else {
+          setCurrentChallengeIndex(challenges.length - 1);
+          setIsLastChallenge(true);
+        }
+      }
+      setIsRestoring(false);
+    } else if (isResponsesLoaded && savedResponses?.length === 0 && !isFetching) {
+      setIsRestoring(false);
+    }
+  }, [isResponsesLoaded, savedResponses, isFetching]);
 
   const submitResponseMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -109,9 +152,10 @@ export default function GamePage() {
         explanation: currentChallenge.explanation,
       });
 
-      const isLastChallenge = currentChallengeIndex >= challenges.length - 1;
+      const lastChallenge = currentChallengeIndex >= challenges.length - 1;
+      setIsLastChallenge(lastChallenge);
 
-      if (isLastChallenge) {
+      if (lastChallenge) {
         const totalTimeMinutes = Math.max(1, Math.floor((Date.now() - startTime) / 60000));
         await updateSessionMutation.mutateAsync({
           totalScore: newTotalScore,
@@ -132,7 +176,6 @@ export default function GamePage() {
 
   const handleCelebrationComplete = useCallback(() => {
     setCelebration(null);
-    const isLastChallenge = currentChallengeIndex >= challenges.length - 1;
     if (isLastChallenge) {
       setLocation(`/results/${sessionId}`);
     } else {
@@ -140,9 +183,9 @@ export default function GamePage() {
       setChallengeStartTime(Date.now());
       setIsSubmitting(false);
     }
-  }, [currentChallengeIndex, sessionId]);
+  }, [isLastChallenge, sessionId]);
 
-  if (sessionLoading || !currentChallenge) {
+  if (sessionLoading || !currentChallenge || isRestoring) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 flex items-center justify-center" data-testid="loading-screen">
         <div className="text-center animate-bounce-in">

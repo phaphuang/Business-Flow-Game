@@ -24,8 +24,6 @@ export default function CelebrationOverlay({ isCorrect, points, explanation, ava
       }));
       setParticles(p);
     }
-    const timer = setTimeout(onComplete, 3500);
-    return () => clearTimeout(timer);
   }, []);
 
   return (

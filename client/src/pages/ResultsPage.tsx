@@ -32,10 +32,12 @@ export default function ResultsPage() {
   const avatarEmoji = AVATARS.find(a => a.id === avatarId)?.emoji || "\uD83E\uDD77";
   const playerName = localStorage.getItem("ipo_player_name") || "Adventurer";
 
-  const { data: session, isLoading: sessionLoading } = useQuery({
+  const { data: sessionData, isLoading: sessionLoading } = useQuery({
     queryKey: ["/api/sessions", sessionId],
     enabled: !!sessionId,
   });
+
+  const session = sessionData as any; // Quick cast since types aren't strictly generated from schema here
 
   const { data: responses, isLoading: responsesLoading } = useQuery({
     queryKey: ["/api/sessions", sessionId, "responses"],
@@ -147,7 +149,7 @@ export default function ResultsPage() {
           </CardContent>
         </Card>
 
-        {leaderboard && Array.isArray(leaderboard) && leaderboard.length > 0 && (
+        {leaderboard && Array.isArray(leaderboard) && leaderboard.length > 0 ? (
           <Card className="mb-4 sm:mb-6">
             <CardHeader className="pb-2 px-3 sm:px-6">
               <CardTitle className="text-base sm:text-lg">{MEDAL} Leaderboard</CardTitle>
@@ -182,20 +184,29 @@ export default function ResultsPage() {
               </div>
             </CardContent>
           </Card>
-        )}
+        ) : null}
 
         <div className="flex gap-2 sm:gap-3 pb-6">
           <Button
             variant="outline"
             className="flex-1 py-6 text-sm sm:text-base touch-manipulation"
-            onClick={() => setLocation("/")}
+            onClick={() => {
+              localStorage.removeItem("ipo_player_name");
+              localStorage.removeItem("ipo_avatar");
+              setLocation("/");
+            }}
             data-testid="button-back-home"
           >
             {HOUSE} Home
           </Button>
           <Button
-            className="flex-1 py-6 text-sm sm:text-base bg-gradient-to-r from-indigo-500 to-purple-500 touch-manipulation"
-            onClick={() => setLocation("/register")}
+            className="flex-1 py-6 text-sm sm:text-base bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 touch-manipulation"
+            onClick={() => {
+              // Clear their current local storage session info so they are forced to register fresh for a new game
+              localStorage.removeItem("ipo_player_name");
+              localStorage.removeItem("ipo_avatar");
+              setLocation("/register");
+            }}
             data-testid="button-play-again"
           >
             {REFRESH} Play Again

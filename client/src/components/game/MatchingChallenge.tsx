@@ -96,36 +96,48 @@ export default function MatchingChallenge({ challenge, onAnswer, disabled }: Pro
         </p>
       </div>
 
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <p className="text-xs font-bold text-slate-500 uppercase">Components - tap to select</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between px-1">
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Components</p>
+            <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Tap to select</span>
+          </div>
           {pairs.map(pair => {
             const connIdx = getConnectionIndex(pair.id);
             const isConnected = connIdx >= 0;
             const color = isConnected ? CONNECTION_COLORS[connIdx % CONNECTION_COLORS.length] : null;
             const isSelected = selectedLeft === pair.id;
+            
             return (
               <Card
                 key={pair.id}
                 data-testid={`left-item-${pair.id}`}
                 onClick={() => handleLeftClick(pair.id)}
-                className={`p-3 sm:p-4 cursor-pointer transition-all touch-manipulation text-sm sm:text-base ${
-                  isSelected ? "border-2 border-primary ring-2 ring-primary/20 bg-primary/5 scale-[1.02]" :
-                  isConnected ? `border-2 ${color?.border} ${color?.bg}` :
-                  "active:scale-[0.98] hover:border-slate-400"
+                className={`relative flex items-center p-3 sm:p-4 cursor-pointer transition-all duration-200 min-h-[4.5rem] ${
+                  isSelected 
+                    ? "bg-indigo-50 border-indigo-500 ring-1 ring-indigo-500 shadow-md scale-[1.01] z-10" 
+                    : isConnected 
+                      ? `${color?.bg} ${color?.border} border-2 shadow-sm`
+                      : "bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 shadow-sm"
                 } ${disabled ? "opacity-60 pointer-events-none" : ""}`}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3 w-full">
                   {isConnected && (
-                    <span className={`w-6 h-6 rounded-full ${color?.badge} text-white text-xs flex items-center justify-center font-bold shrink-0`}>
+                    <span className={`w-7 h-7 rounded-full ${color?.badge} text-white text-xs flex items-center justify-center font-bold shrink-0 shadow-sm`}>
                       {connIdx + 1}
                     </span>
                   )}
-                  <span className="flex-1">{pair.left}</span>
+                  <span className="flex-1 text-sm sm:text-base font-medium text-slate-700">{pair.left}</span>
                   {isConnected && (
-                    <span className="w-7 h-7 flex items-center justify-center rounded-full bg-red-100 shrink-0">
-                      <X className="w-4 h-4 text-red-500" />
-                    </span>
+                    <button 
+                      className="w-6 h-6 flex items-center justify-center rounded-full bg-red-100 hover:bg-red-200 transition-colors shrink-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLeftClick(pair.id);
+                      }}
+                    >
+                      <X className="w-3.5 h-3.5 text-red-600" />
+                    </button>
                   )}
                 </div>
               </Card>
@@ -133,33 +145,45 @@ export default function MatchingChallenge({ challenge, onAnswer, disabled }: Pro
           })}
         </div>
 
-        <div className="space-y-2">
-          <p className="text-xs font-bold text-slate-500 uppercase">
-            Descriptions {selectedLeft ? "- tap to connect" : ""}
-          </p>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between px-1">
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Descriptions</p>
+            {selectedLeft && (
+              <span className="text-[10px] text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full animate-pulse">
+                Tap to connect
+              </span>
+            )}
+          </div>
           {shuffledRight.map(pair => {
             const connIdx = getRightConnectionIndex(pair.id);
             const isConnected = connIdx >= 0;
             const color = isConnected ? CONNECTION_COLORS[connIdx % CONNECTION_COLORS.length] : null;
             const canClick = !!selectedLeft && !disabled;
+            
             return (
               <Card
                 key={pair.id}
                 data-testid={`right-item-${pair.id}`}
                 onClick={() => handleRightClick(pair.id)}
-                className={`p-3 sm:p-4 transition-all touch-manipulation text-sm sm:text-base ${
-                  canClick ? "cursor-pointer border-2 border-dashed border-primary/40 bg-primary/5 active:scale-[0.98]" : "cursor-default"
+                className={`relative flex items-center p-3 sm:p-4 transition-all duration-200 min-h-[4.5rem] ${
+                  canClick 
+                    ? "cursor-pointer border-dashed border-2 border-indigo-200 hover:border-indigo-400 hover:bg-indigo-50/50" 
+                    : "cursor-default border border-slate-200 bg-slate-50/50"
                 } ${
-                  isConnected ? `border-2 ${color?.border} ${color?.bg}` : ""
+                  isConnected 
+                    ? `border-solid border-2 ${color?.bg} ${color?.border} shadow-sm` 
+                    : ""
                 } ${disabled ? "opacity-60" : ""}`}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3 w-full">
                   {isConnected && (
-                    <span className={`w-6 h-6 rounded-full ${color?.badge} text-white text-xs flex items-center justify-center font-bold shrink-0`}>
+                    <span className={`w-7 h-7 rounded-full ${color?.badge} text-white text-xs flex items-center justify-center font-bold shrink-0 shadow-sm`}>
                       {connIdx + 1}
                     </span>
                   )}
-                  <span className="flex-1">{pair.right}</span>
+                  <span className={`flex-1 text-sm sm:text-base ${isConnected ? "font-medium text-slate-700" : "text-slate-600"}`}>
+                    {pair.right}
+                  </span>
                 </div>
               </Card>
             );

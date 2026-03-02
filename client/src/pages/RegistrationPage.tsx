@@ -23,20 +23,30 @@ export default function RegistrationPage() {
       return res.json();
     },
     onSuccess: async (student) => {
-      const sessionRes = await apiRequest("POST", "/api/sessions/start", { studentId: student.id });
-      const session = await sessionRes.json();
+      try {
+        // Start a completely new session every time they register/start
+        const newSessionRes = await apiRequest("POST", "/api/sessions/start", { studentId: student.id });
+        const newSession = await newSessionRes.json();
+        const targetSessionId = newSession.id;
 
-      localStorage.setItem("ipo_avatar", selectedAvatar);
-      localStorage.setItem("ipo_player_name", student.fullName);
+        localStorage.setItem("ipo_avatar", selectedAvatar);
+        localStorage.setItem("ipo_player_name", student.fullName);
 
-      toast({
-        title: "Let's go!",
-        description: `Welcome ${student.fullName}! Your adventure begins now...`,
-      });
+        toast({
+          title: "Let's go!",
+          description: `Welcome ${student.fullName}! Your adventure begins now...`,
+        });
 
-      setTimeout(() => {
-        setLocation(`/game/${session.id}`);
-      }, 800);
+        setTimeout(() => {
+          setLocation(`/game/${targetSessionId}`);
+        }, 800);
+      } catch (err: any) {
+        toast({
+          title: "Error starting game",
+          description: err.message,
+          variant: "destructive",
+        });
+      }
     },
     onError: (error: Error) => {
       toast({
