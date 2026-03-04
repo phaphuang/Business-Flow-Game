@@ -1,6 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { serveStatic } from "./static";
+// serveStatic is dynamically imported only when needed (not on Vercel)
 import { createServer } from "http";
 
 const app = express();
@@ -86,6 +86,7 @@ function initApp() {
       // doesn't interfere with the other routes
       if (!isVercel) {
         if (process.env.NODE_ENV === "production") {
+          const { serveStatic } = await import("./static");
           serveStatic(app);
         } else {
           const { setupVite } = await import("./vite");
